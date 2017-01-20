@@ -8,45 +8,55 @@
 // Need to link with Iplhlapi.lib
 #pragma comment(lib, "IPHLPAPI.lib")
 
-#include <stdlib.h>
-
 #include "at_spindi_WinPing.h"
 
+
+typedef struct {
+	char data[32];
+} MY_DATA;
+
+
+typedef struct {
+#if _WIN64	
+	ICMP_ECHO_REPLY32	reply;
+#else
+	ICMP_ECHO_REPLY		reply;
+#endif
+	MY_DATA				data;
+	BYTE				extra_data[8];
+} MY_ICMP_REPLY;
+
+
 JNIEXPORT jint JNICALL 
-Java_at_spindi_WinPing_native_1icmp_1WinPing4 (JNIEnv *env, jclass cl, const jint IpAdress, const jint TimeoutMs) {
+Java_at_spindi_WinPing_native_1icmp_1WinPing4 (JNIEnv *env, jclass cl, jint IpAdress, jint TimeoutMs) {
 		
 	const HANDLE hIcmpFile = IcmpCreateFile();
 	if (hIcmpFile == INVALID_HANDLE_VALUE) {
 		return GetLastError();
 	}
 
-	const char SendData[32] = "WinPingJni Data Buffer";
+	MY_DATA SendData = { .data = "WinPingJni Send Buffer Data" };
+	MY_ICMP_REPLY ReplyBuffer;
 
-#if _WIN32
-	const int sizeOfReplyBuffer = sizeof(ICMP_ECHO_REPLY)   + sizeof(SendData);
-#else
-	const int sizeOfReplyBuffer = sizeof(ICMP_ECHO_REPLY32) + sizeof(SendData);
-#endif
-
-	LPVOID ReplyBuffer = malloc(sizeOfReplyBuffer);
-
-	DWORD sendRc = IcmpSendEcho(
+	DWORD ReplyReceived = IcmpSendEcho(
 		hIcmpFile,
 		IpAdress,
-		SendData,
+		(LPVOID)&SendData,
 		sizeof(SendData),
 		NULL,				// option information
-		ReplyBuffer,
-		sizeOfReplyBuffer,
+		(LPVOID)&ReplyBuffer,
+		sizeof(MY_ICMP_REPLY),
 		TimeoutMs);
 
-	PICMP_ECHO_REPLY reply = (PICMP_ECHO_REPLY)ReplyBuffer;
-	const ULONG IpStatus = reply->Status;
+	if (ReplyReceived == 0) {
+		return GetLastError();
+	}
+
+	const ULONG IpStatus = ReplyBuffer.reply.Status;
 
 	//
-	// free up ressources
+	// free up resources
 	//
-	free(ReplyBuffer);
 	IcmpCloseHandle(hIcmpFile);
 
 	return IpStatus;

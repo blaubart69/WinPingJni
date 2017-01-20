@@ -13,7 +13,7 @@ extern "C" {
  * Signature: (II)I
  */
 JNIEXPORT jint JNICALL Java_at_spindi_WinPing_native_1icmp_1WinPing4
-  (JNIEnv *, jclass, const jint, const jint);
+  (JNIEnv *, jclass, jint, jint);
 
 #ifdef __cplusplus
 }
