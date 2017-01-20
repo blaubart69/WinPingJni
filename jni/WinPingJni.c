@@ -12,7 +12,7 @@
 
 
 typedef struct {
-	char data[32];
+	char data[64];
 } MY_DATA;
 
 
@@ -23,7 +23,7 @@ typedef struct {
 	ICMP_ECHO_REPLY		reply;
 #endif
 	MY_DATA				data;
-	BYTE				extra_data[8];
+	BYTE				extra_data[9];
 } MY_ICMP_REPLY;
 
 
@@ -36,20 +36,30 @@ Java_at_spindi_WinPing_native_1icmp_1WinPing4 (JNIEnv *env, jclass cl, jint IpAd
 	}
 
 	MY_DATA SendData = { .data = "WinPingJni Send Buffer Data" };
-	MY_ICMP_REPLY ReplyBuffer;
+	MY_ICMP_REPLY ReplyBuffer = { 0 };
 
-	DWORD ReplyReceived = IcmpSendEcho(
+	int sizeSendData = sizeof(SendData);
+	int sizeReplyBuffer = sizeof(ReplyBuffer);
+	int sizeIcmpReply = sizeof(ICMP_ECHO_REPLY32);
+
+	DWORD ReplysReceived = IcmpSendEcho(
 		hIcmpFile,
 		IpAdress,
 		(LPVOID)&SendData,
 		sizeof(SendData),
 		NULL,				// option information
 		(LPVOID)&ReplyBuffer,
-		sizeof(MY_ICMP_REPLY),
+		sizeof(ReplyBuffer),
 		TimeoutMs);
 
-	if (ReplyReceived == 0) {
-		return GetLastError();
+	if (ReplysReceived == 0) {
+
+		WCHAR IpErrorMsg[1024];
+		DWORD ErrSize = sizeof(IpErrorMsg);
+		GetIpErrorString(ReplyBuffer.reply.Status, IpErrorMsg, &ErrSize);
+
+		DWORD replyLastError = GetLastError();
+		return replyLastError;
 	}
 
 	const ULONG IpStatus = ReplyBuffer.reply.Status;
