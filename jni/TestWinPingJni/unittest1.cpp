@@ -45,7 +45,7 @@ namespace TestWinPingJni
 
 			int rc = Java_at_spindi_WinPing_native_1icmp_1WinPing4(NULL, NULL, ip.S_un.S_addr, 1000);
 
-			Assert::AreNotEqual(0, rc);
+			Assert::AreEqual<int>(0, rc);
 		}
 	};
 }
