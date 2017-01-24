@@ -2,6 +2,11 @@
 
 #include <stdio.h>
 
+
+void print3264(const char* label, const int r, const int r32) {
+	printf("%-25s %3d - %3d\n", label, r, r32);
+}
+
 int main(int argc, char* argv) {
 
 	MY_DATA			SendData = { .data = "WinPingJni Send Buffer Data" };
@@ -26,20 +31,21 @@ int main(int argc, char* argv) {
 	printf("ICMP_ECHO_REPLY     = %d\n", (int)sizeof(ICMP_ECHO_REPLY));
 	printf("ICMP_ECHO_REPLY32   = %d\n", (int)sizeof(ICMP_ECHO_REPLY32));
 	printf("\n");
-	printf("Address:       %d - %d\n",sizeof(r.Address), sizeof(r32.Address));
-	printf("Data:          %d - %d\n", sizeof(r.Data), sizeof(r32.Data));
-	printf("DataSize:      %d - %d\n", sizeof(r.DataSize), sizeof(r32.DataSize));
-	printf("Options:       %d - %d\n", sizeof(r.Options), sizeof(r32.Options));
-	printf("Reserved:	   %d - %d\n", sizeof(r.Reserved), sizeof(r32.Reserved));
-	printf("RoundTripTime: %d - %d\n", sizeof(r.RoundTripTime), sizeof(r32.RoundTripTime));
-	printf("Status:        %d - %d\n", sizeof(r.Status), sizeof(r32.Status));
+	print3264("Address",sizeof(r.Address), sizeof(r32.Address));
+	print3264("Data", sizeof(r.Data), sizeof(r32.Data));
+	print3264("DataSize", sizeof(r.DataSize), sizeof(r32.DataSize));
+	print3264("Options", sizeof(r.Options), sizeof(r32.Options));
+	print3264("Reserved", sizeof(r.Reserved), sizeof(r32.Reserved));
+	print3264("RoundTripTime", sizeof(r.RoundTripTime), sizeof(r32.RoundTripTime));
+	print3264("Status", sizeof(r.Status), sizeof(r32.Status));
 	printf("\n");
-	printf("Options.Flags:        %d - %d\n", sizeof(r.Options.Flags), sizeof(r32.Options.Flags));
-	printf("Options.OptionsData:  %d - %d\n", sizeof(r.Options.OptionsData), sizeof(r32.Options.OptionsData));
-	printf("Options.OptionsSize:  %d - %d\n", sizeof(r.Options.OptionsSize), sizeof(r32.Options.OptionsSize));
-	printf("Options.Tos:          %d - %d\n", sizeof(r.Options.Tos), sizeof(r32.Options.Tos));
-	printf("Options.Ttl:          %d - %d\n", sizeof(r.Options.Ttl), sizeof(r32.Options.Ttl));
+	print3264("Options.Flags", sizeof(r.Options.Flags), sizeof(r32.Options.Flags));
+	print3264("Options.OptionsData", sizeof(r.Options.OptionsData), sizeof(r32.Options.OptionsData));
+	print3264("Options.OptionsSize", sizeof(r.Options.OptionsSize), sizeof(r32.Options.OptionsSize));
+	print3264("Options.Tos", sizeof(r.Options.Tos), sizeof(r32.Options.Tos));
+	print3264("Options.Ttl", sizeof(r.Options.Ttl), sizeof(r32.Options.Ttl));
 
 
 #endif
 }
+
