@@ -18,12 +18,18 @@
     <ClCompile Include="WinPingJni.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="DebugPrint.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="at_spindi_WinPing.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="WinPingJni.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DebugPrint.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
