@@ -1,5 +1,5 @@
-#include "../at_spindi_WinPing.h"
-#include "../WinPingJni.h"
+#include "../WinPingJni/at_spindi_WinPing.h"
+#include "../WinPingJni/WinPingJni.h"
 
 #include <stdio.h>
 
@@ -50,18 +50,22 @@ void TestStruct() {
 
 }
 
-void doOnePing() {
-	IN_ADDR ip;
-	// 213.90.36.103
-	ip.S_un.S_un_b.s_b1 = 213;
-	ip.S_un.S_un_b.s_b2 = 90;
-	ip.S_un.S_un_b.s_b3 = 36;
-	ip.S_un.S_un_b.s_b4 = 103;
-
+int doOnePing(IN_ADDR ip) {
+	
 	int rc = Java_at_spindi_WinPing_native_1icmp_1WinPing4(NULL, NULL, ip.S_un.S_addr, 1000);
+	return rc;
 }
 
-int main(int argc, char* argv) {
-	doOnePing();
+int main(int argc, char* argv[]) {
+	
+	IN_ADDR ip;
+	ip.S_un.S_un_b.s_b1 = atoi(argv[1]);
+	ip.S_un.S_un_b.s_b2 = atoi(argv[2]);
+	ip.S_un.S_un_b.s_b3 = atoi(argv[3]);
+	ip.S_un.S_un_b.s_b4 = atoi(argv[4]);
+
+	printf("pinging %d.%d.%d.%d...\n", ip.S_un.S_un_b.s_b1, ip.S_un.S_un_b.s_b2, ip.S_un.S_un_b.s_b3, ip.S_un.S_un_b.s_b4);
+	int pingrc = doOnePing(ip);
+	printf("%d", pingrc);
 }
 
