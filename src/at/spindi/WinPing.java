@@ -21,6 +21,7 @@ public class WinPing {
         address |= ((tmpByteArr[2] << 16) & 0xFF0000);
         address |= ((tmpByteArr[3] << 24) & 0xFF000000);
 		
-		return native_icmp_WinPing4(address, timeoutMs);
+
+        return native_icmp_WinPing4(address, timeoutMs);
 	}
 }
