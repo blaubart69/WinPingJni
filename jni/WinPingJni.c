@@ -5,17 +5,17 @@
 #include <IPHlpApi.h>
 #include <IcmpAPI.h>
 
-#include <memory.h>
-
 // Need to link with Iplhlapi.lib
 //#pragma comment(lib, "IPHLPAPI.lib")
 
 #include "at_spindi_WinPing.h"
 #include "WinPingJni.h"
 
+
 #ifdef _DEBUG
 #include "DebugPrint.h"
 #endif 
+
 
 void FakeDllMain() {
 
@@ -37,6 +37,7 @@ Java_at_spindi_WinPing_native_1icmp_1WinPing4 (JNIEnv *env, jclass cl, jint IpAd
 	int sizeSendData	= sizeof(SendData);
 	int sizeReplyBuffer = sizeof(ReplyBuffer);
 	int sizeIcmpReply	= sizeof(ReplyBuffer.reply);
+
 
 #ifdef _DEBUG
 	DBGPRINT(L"sizeof(ReplyBuffer) = %d\n", sizeReplyBuffer);
