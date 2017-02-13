@@ -34,14 +34,12 @@ Java_at_spindi_WinPing_native_1icmp_1WinPing4 (JNIEnv *env, jclass cl, jint IpAd
 	}
 
 	MY_DATA			SendData = { .data = "WinPingJni Send Buffer Data" };
-	MY_ICMP_REPLY	ReplyBuffer = { 0 };
+	MY_ICMP_REPLY	ReplyBuffer;// = { 0 };
 
+#ifdef _DEBUG	
 	int sizeSendData	= sizeof(SendData);
 	int sizeReplyBuffer = sizeof(ReplyBuffer);
 	int sizeIcmpReply	= sizeof(ReplyBuffer.reply);
-
-
-#ifdef _DEBUG
 	DBGPRINT(L"sizeof(ReplyBuffer) = %d\n", sizeReplyBuffer);
 	DBGPRINT(L"sizeof(IcmpReply)   = %d\n", sizeIcmpReply);
 #endif
