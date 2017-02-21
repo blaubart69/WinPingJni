@@ -9,7 +9,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 
-public class JniPing {
+public class JniPingSync {
 
 	@Test
 	public void test() throws UnknownHostException {

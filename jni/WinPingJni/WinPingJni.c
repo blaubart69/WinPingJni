@@ -34,7 +34,7 @@ Java_at_spindi_WinPing_native_1icmp_1WinPing4 (JNIEnv *env, jclass cl, jint IpAd
 	}
 
 	MY_DATA			SendData = { .data = "WinPingJni Send Buffer Data" };
-	MY_ICMP_REPLY	ReplyBuffer;// = { 0 };
+	MY_ICMP_REPLY	ReplyBuffer;// = { 0 };		// don't initialize the reply buffer. this requiers memset() and it's not available without CRT 
 
 #ifdef _DEBUG	
 	int sizeSendData	= sizeof(SendData);
@@ -44,7 +44,7 @@ Java_at_spindi_WinPing_native_1icmp_1WinPing4 (JNIEnv *env, jclass cl, jint IpAd
 	DBGPRINT(L"sizeof(IcmpReply)   = %d\n", sizeIcmpReply);
 #endif
 
-	DWORD ReplysReceived = IcmpSendEcho(
+	const DWORD ReplysReceived = IcmpSendEcho(
 		hIcmpFile,
 		IpAdress,
 		(LPVOID)&SendData,

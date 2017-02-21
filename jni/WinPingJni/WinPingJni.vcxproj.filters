@@ -32,5 +32,8 @@
     <ClCompile Include="WinPingJni.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="PingApcAsync.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

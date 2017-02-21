@@ -25,6 +25,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DebugPrint.c" />
+    <ClCompile Include="PingApcAsync.cpp" />
     <ClCompile Include="WinPingJni.c" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

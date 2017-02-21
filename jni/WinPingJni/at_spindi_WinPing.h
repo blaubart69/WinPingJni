@@ -15,6 +15,14 @@ extern "C" {
 JNIEXPORT jint JNICALL Java_at_spindi_WinPing_native_1icmp_1WinPing4
   (JNIEnv *, jclass, jint, jint);
 
+/*
+ * Class:     at_spindi_WinPing
+ * Method:    native_icmp_WinPing4Async
+ * Signature: (IILjava/util/function/Consumer;)I
+ */
+JNIEXPORT jint JNICALL Java_at_spindi_WinPing_native_1icmp_1WinPing4Async
+  (JNIEnv *, jclass, jint, jint, jobject);
+
 #ifdef __cplusplus
 }
 #endif
