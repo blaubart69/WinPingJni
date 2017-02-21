@@ -16,4 +16,4 @@
 #include <windows.h>
 #include <IPHlpApi.h>
 
-#include "..\at_spindi_WinPing.h"
+#include "..\WinPingJni\at_spindi_WinPing.h"

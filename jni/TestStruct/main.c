@@ -1,4 +1,5 @@
-#include "../WinPingJni.h"
+#include "../WinPingJni/at_spindi_WinPing.h"
+#include "../WinPingJni/WinPingJni.h"
 
 #include <stdio.h>
 
@@ -7,8 +8,7 @@ void print3264(const char* label, const int r, const int r32) {
 	printf("%-25s %3d - %3d\n", label, r, r32);
 }
 
-int main(int argc, char* argv) {
-
+void TestStruct() {
 	MY_DATA			SendData = { .data = "WinPingJni Send Buffer Data" };
 	MY_ICMP_REPLY	ReplyBuffer = { 0 };
 
@@ -31,7 +31,7 @@ int main(int argc, char* argv) {
 	printf("ICMP_ECHO_REPLY     = %d\n", (int)sizeof(ICMP_ECHO_REPLY));
 	printf("ICMP_ECHO_REPLY32   = %d\n", (int)sizeof(ICMP_ECHO_REPLY32));
 	printf("\n");
-	print3264("Address",sizeof(r.Address), sizeof(r32.Address));
+	print3264("Address", sizeof(r.Address), sizeof(r32.Address));
 	print3264("Data", sizeof(r.Data), sizeof(r32.Data));
 	print3264("DataSize", sizeof(r.DataSize), sizeof(r32.DataSize));
 	print3264("Options", sizeof(r.Options), sizeof(r32.Options));
@@ -47,5 +47,25 @@ int main(int argc, char* argv) {
 
 
 #endif
+
+}
+
+int doOnePing(IN_ADDR ip) {
+	
+	int rc = Java_at_spindi_WinPing_native_1icmp_1WinPing4(NULL, NULL, ip.S_un.S_addr, 1000);
+	return rc;
+}
+
+int main(int argc, char* argv[]) {
+	
+	IN_ADDR ip;
+	ip.S_un.S_un_b.s_b1 = atoi(argv[1]);
+	ip.S_un.S_un_b.s_b2 = atoi(argv[2]);
+	ip.S_un.S_un_b.s_b3 = atoi(argv[3]);
+	ip.S_un.S_un_b.s_b4 = atoi(argv[4]);
+
+	printf("pinging %d.%d.%d.%d...\n", ip.S_un.S_un_b.s_b1, ip.S_un.S_un_b.s_b2, ip.S_un.S_un_b.s_b3, ip.S_un.S_un_b.s_b4);
+	int pingrc = doOnePing(ip);
+	printf("%d", pingrc);
 }
 

@@ -2,6 +2,10 @@
 bin/**
 out/**
 
+*.dll
+*.exp
+*.lib
+
 *.VC.db
 *.opendb
 

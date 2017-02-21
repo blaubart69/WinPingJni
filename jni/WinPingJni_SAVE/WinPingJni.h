@@ -5,7 +5,7 @@
 
 #include <windows.h>
 #include <IPHlpApi.h>
-//#include <IcmpAPI.h>
+#include <IcmpAPI.h>
 
 
 typedef struct my_data {
@@ -15,7 +15,7 @@ typedef struct my_data {
 
 typedef struct {
 #if _WIN64	
-	ICMP_ECHO_REPLY		reply;
+	ICMP_ECHO_REPLY32	reply;
 #else
 	ICMP_ECHO_REPLY		reply;
 #endif
