@@ -4,9 +4,23 @@
 #define VC_EXTRALEAN
 
 #include <windows.h>
+
+#define PIO_APC_ROUTINE_DEFINED		// before IcmpAPI.h
+
+#include <winternl.h>				// PIO_STATUS_BLOCK, PIO_APC_ROUTINE
+
 #include <IPHlpApi.h>
 #include <IcmpAPI.h>
 
+/*
+typedef
+VOID
+(WINAPI *PIO_APC_ROUTINE) (
+	IN PVOID ApcContext,
+	IN PIO_STATUS_BLOCK IoStatusBlock,
+	IN ULONG Reserved
+	);
+*/
 
 typedef struct my_data {
 	char data[32];
@@ -24,3 +38,13 @@ typedef struct {
 	BYTE				extra_data[8];
 } MY_ICMP_REPLY;
 
+
+typedef struct {
+	HANDLE hIcmpFile;
+	HANDLE hThread;
+
+} WIN_PING_GLOBAL;
+
+typedef void(*pingCallback)(IPAddr ip, DWORD roundtrip, int pingStatus, int LastError, void* ctx);
+
+DWORD enqueuePing(const IPAddr ipToPing, const DWORD timeoutMs, const pingCallback callback, const LPVOID callbackContext);

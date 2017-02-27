@@ -23,7 +23,8 @@ DllMain(IN HINSTANCE hDllHandle, IN DWORD nReason, IN LPVOID Reserved)
 	return bSuccess;
 }
 
-extern HANDLE g_hIcmpFile;
+// global structure initialized via "startup" call
+extern WIN_PING_GLOBAL* gWinPing;
 
 JNIEXPORT jint JNICALL 
 Java_at_spindi_WinPing_native_1icmp_1WinPing4 (JNIEnv *env, jclass cl, jint IpAdress, jint TimeoutMs) {
@@ -40,7 +41,7 @@ Java_at_spindi_WinPing_native_1icmp_1WinPing4 (JNIEnv *env, jclass cl, jint IpAd
 #endif
 
 	DWORD ReplysReceived = IcmpSendEcho(
-		g_hIcmpFile,
+		gWinPing->hIcmpFile,
 		IpAdress,
 		(LPVOID)&SendData,
 		sizeof(SendData),
