@@ -9,6 +9,22 @@ extern "C" {
 #endif
 /*
  * Class:     at_spindi_WinPing
+ * Method:    native_WinPing_Startup
+ * Signature: ()I
+ */
+JNIEXPORT jint JNICALL Java_at_spindi_WinPing_native_1WinPing_1Startup
+  (JNIEnv *, jclass);
+
+/*
+ * Class:     at_spindi_WinPing
+ * Method:    native_WinPing_Cleanup
+ * Signature: ()I
+ */
+JNIEXPORT jint JNICALL Java_at_spindi_WinPing_native_1WinPing_1Cleanup
+  (JNIEnv *, jclass);
+
+/*
+ * Class:     at_spindi_WinPing
  * Method:    native_icmp_WinPing4
  * Signature: (II)I
  */

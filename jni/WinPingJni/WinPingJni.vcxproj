@@ -27,6 +27,7 @@
     <ClCompile Include="DebugPrint.c" />
     <ClCompile Include="PingApcAsync.cpp" />
     <ClCompile Include="WinPingJni.c" />
+    <ClCompile Include="WinPingStartupCleanup.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{21FE3D8B-BDB0-4D17-AC00-E1314EC7DD1A}</ProjectGuid>

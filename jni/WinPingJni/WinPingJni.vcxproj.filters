@@ -32,7 +32,7 @@
     <ClCompile Include="WinPingJni.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="PingApcAsync.cpp">
+    <ClCompile Include="WinPingStartupCleanup.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
