@@ -2,6 +2,8 @@
 #define VC_EXTRALEAN
 
 #include <windows.h>
+
+#include <IPHlpApi.h>
 #include <IcmpAPI.h>
 
 #include <jni.h>
