@@ -2,7 +2,7 @@
 #define VC_EXTRALEAN
 
 #include <windows.h>
-//#include <IPHlpApi.h>
+#include <IPHlpApi.h>
 #include <IcmpAPI.h>
 
 // Need to link with Iplhlapi.lib
@@ -28,8 +28,8 @@ extern HANDLE g_hIcmpFile;
 JNIEXPORT jint JNICALL 
 Java_at_spindi_WinPing_native_1icmp_1WinPing4 (JNIEnv *env, jclass cl, jint IpAdress, jint TimeoutMs) {
 		
-	MY_DATA			SendData = { .data = "WinPingJni Send Buffer Data" };
-	MY_ICMP_REPLY	ReplyBuffer;// = { 0 };
+	MY_DATA			SendData;		// = { .data = "WinPingJni Send Buffer Data" };
+	MY_ICMP_REPLY	ReplyBuffer;	// = { 0 };
 
 #ifdef _DEBUG	
 	int sizeSendData	= sizeof(SendData);

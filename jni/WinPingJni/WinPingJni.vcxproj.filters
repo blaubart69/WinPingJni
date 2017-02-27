@@ -29,10 +29,10 @@
     <ClCompile Include="DebugPrint.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="WinPingJni.c">
+    <ClCompile Include="StartupCleanup.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="WinPingStartupCleanup.cpp">
+    <ClCompile Include="PingSync.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
