@@ -16,11 +16,13 @@ JNIEXPORT jint JNICALL Java_at_spindi_WinPing_native_1WinPing_1Startup(JNIEnv *,
 
 	gWinPing = (WIN_PING_GLOBAL*)HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, sizeof(WIN_PING_GLOBAL));
 	if (gWinPing == NULL) {
+		// TODO: maybe a better retcode here
 		return 1;
 	}
 
-	gWinPing->hIcmpFile = IcmpCreateFile();
+	gWinPing->asyncCounter = -1L;
 
+	gWinPing->hIcmpFile = IcmpCreateFile();
 	if (gWinPing->hIcmpFile == INVALID_HANDLE_VALUE) {
 		gWinPing->hIcmpFile = NULL;
 		return GetLastError();

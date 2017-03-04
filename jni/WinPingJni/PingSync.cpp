@@ -16,18 +16,11 @@
 #include "DebugPrint.h"
 #endif 
 
-BOOLEAN WINAPI 
-DllMain(IN HINSTANCE hDllHandle, IN DWORD nReason, IN LPVOID Reserved)
-{
-	BOOLEAN bSuccess = TRUE;
-	return bSuccess;
-}
-
 // global structure initialized via "startup" call
 extern WIN_PING_GLOBAL* gWinPing;
 
 JNIEXPORT jint JNICALL 
-Java_at_spindi_WinPing_native_1icmp_1WinPing4 (JNIEnv *env, jclass cl, jint IpAdress, jint TimeoutMs) {
+Java_at_spindi_WinPing_native_1icmp_1WinPing4 (const JNIEnv *env, const jclass cl, const jint IpAdress, const jint TimeoutMs) {
 		
 	MY_DATA			SendData;		// = { .data = "WinPingJni Send Buffer Data" };
 	MY_ICMP_REPLY	ReplyBuffer;	// = { 0 };
@@ -40,7 +33,7 @@ Java_at_spindi_WinPing_native_1icmp_1WinPing4 (JNIEnv *env, jclass cl, jint IpAd
 	DBGPRINT(L"sizeof(IcmpReply)   = %d\n", sizeIcmpReply);
 #endif
 
-	DWORD ReplysReceived = IcmpSendEcho(
+	const DWORD ReplysReceived = IcmpSendEcho(
 		gWinPing->hIcmpFile,
 		IpAdress,
 		(LPVOID)&SendData,

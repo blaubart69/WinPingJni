@@ -42,17 +42,16 @@ JNIEXPORT jint JNICALL Java_at_spindi_WinPing_native_1icmp_1WinPing4Async
 	//
 	// Do something! Do something!
 	//
-	MY_JNI_CONTEXT *ctx = (MY_JNI_CONTEXT*) HeapAlloc(GetProcessHeap(), 0, sizeof(MY_JNI_CONTEXT));
-	ctx->Consumer = Consumer;
-	ctx->env = env;
+	MY_JNI_CONTEXT *jniCtx = (MY_JNI_CONTEXT*) HeapAlloc(GetProcessHeap(), 0, sizeof(MY_JNI_CONTEXT));
+	jniCtx->Consumer = Consumer;
+	jniCtx->env = env;
 
-	DWORD enqueueRc = enqueuePing(bigEndianv4Address, timeoutMs, jniCallback, ctx);
+	const DWORD enqueueRc = enqueuePing(bigEndianv4Address, timeoutMs, jniCallback, jniCtx);
 	if (enqueueRc != 0) {
-		HeapFree(GetProcessHeap(), 0, ctx);
+		HeapFree(GetProcessHeap(), 0, jniCtx);
 	}
 
-
-	return 0;
+	return enqueueRc;
 }
 
 // ----------------------------------------------------------------------------
@@ -99,7 +98,7 @@ void WINAPI ApcCallback_IcmpSendEcho(IN PVOID ApcContext, IN PIO_STATUS_BLOCK Io
 		lpCallbackContext);
 }
 
-void NTAPI ApcCallback_WorkitemEnqueue(ULONG_PTR Parameter) {
+void NTAPI ApcCallback_ProcessWorkitem(ULONG_PTR Parameter) {
 	APC_PING_WORKITEM* context = (APC_PING_WORKITEM*)Parameter;
 	//
 	// we are now within the "ping thread"
@@ -141,17 +140,24 @@ DWORD WINAPI ThreadProc(LPVOID lpThreadParameter) {
 	while ( (sleepRc=SleepEx(10 * 1000, TRUE)) == WAIT_IO_COMPLETION) {
 	}
 	if (sleepRc == 0) {
-		// timeout
+		// timeout!
+		//
+		// try to write -1 to the global counter
+		//
+		//_InterlockedCompareExchange(&(gWinPing->asyncCounter), -1, 
 	}
 	return 0;
 }
 
-
 DWORD enqueuePing(const IPAddr ipToPing, const DWORD timeoutMs, const pingCallback callback, const LPVOID callbackContext) {
 	
-	gWinPing->hThread = CreateThread(NULL, 1, (LPTHREAD_START_ROUTINE)ThreadProc, NULL, 0, NULL);
-	if (gWinPing->hThread == NULL) {
-		return GetLastError();
+	if (_InterlockedIncrement(&(gWinPing->asyncCounter)) == 0L) {
+		// means: APC-thread has stoppped working or isn't started yet
+		// start it
+		gWinPing->hThread = CreateThread(NULL, 1, (LPTHREAD_START_ROUTINE)ThreadProc, NULL, 0, NULL);
+		if (gWinPing->hThread == NULL) {
+			return GetLastError();
+		}
 	}
 
 	APC_PING_WORKITEM* context = (APC_PING_WORKITEM*) HeapAlloc(GetProcessHeap(), 0, sizeof(APC_PING_WORKITEM));
@@ -160,7 +166,7 @@ DWORD enqueuePing(const IPAddr ipToPing, const DWORD timeoutMs, const pingCallba
 	context->callback = callback;
 	context->callbackContext = callbackContext;
 
-	if (QueueUserAPC(ApcCallback_WorkitemEnqueue, gWinPing->hThread, (ULONG_PTR)context) != 0) {
+	if (QueueUserAPC(ApcCallback_ProcessWorkitem, gWinPing->hThread, (ULONG_PTR)context) != 0) {
 		return GetLastError();
 	}
 

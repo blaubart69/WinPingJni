@@ -40,9 +40,9 @@ typedef struct {
 
 
 typedef struct {
-	HANDLE hIcmpFile;
-	HANDLE hThread;
-
+									 HANDLE hIcmpFile;
+									 HANDLE hThread;
+	__declspec(align(64))	volatile UINT64  asyncCounter;
 } WIN_PING_GLOBAL;
 
 typedef void(*pingCallback)(IPAddr ip, DWORD roundtrip, int pingStatus, int LastError, void* ctx);

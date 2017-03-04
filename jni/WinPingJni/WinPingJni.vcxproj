@@ -25,6 +25,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DebugPrint.c" />
+    <ClCompile Include="DllMain.cpp" />
     <ClCompile Include="PingApcAsync.cpp" />
     <ClCompile Include="PingSync.cpp" />
     <ClCompile Include="StartupCleanup.cpp" />
