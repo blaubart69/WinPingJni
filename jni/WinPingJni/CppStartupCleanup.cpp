@@ -9,10 +9,11 @@
 #include <jni.h>
 
 #include "WinPingJni.h"
+#include "CppApcWorker.h"
 
 WIN_PING_GLOBAL* gWinPing;
 
-JNIEXPORT jint JNICALL Java_at_spindi_WinPing_native_1WinPing_1Startup(JNIEnv *, jclass) {
+JNIEXPORT jint JNICALL Java_at_spindi_WinPing_native_1WinPing_1Startup(JNIEnv *env, jclass clazz) {
 
 	gWinPing = (WIN_PING_GLOBAL*)HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, sizeof(WIN_PING_GLOBAL));
 	if (gWinPing == NULL) {
@@ -20,13 +21,16 @@ JNIEXPORT jint JNICALL Java_at_spindi_WinPing_native_1WinPing_1Startup(JNIEnv *,
 		return 1;
 	}
 
-	gWinPing->asyncCounter = -1L;
-
 	gWinPing->hIcmpFile = IcmpCreateFile();
 	if (gWinPing->hIcmpFile == INVALID_HANDLE_VALUE) {
 		gWinPing->hIcmpFile = NULL;
 		return GetLastError();
 	}
+
+	env->GetJavaVM(&(gWinPing->vm));
+
+	gWinPing->apcWorker = new ApcWorker<MY_PING_CTX>();
+
 	return 0;
 }
 

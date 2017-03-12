@@ -19,16 +19,19 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CppApcWorker.h" />
     <ClInclude Include="at_spindi_WinPing.h" />
+    <ClInclude Include="CppPingAsync.h" />
     <ClInclude Include="DebugPrint.h" />
     <ClInclude Include="WinPingJni.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="CppApcWorker.cpp" />
     <ClCompile Include="DebugPrint.c" />
-    <ClCompile Include="DllMain.cpp" />
-    <ClCompile Include="PingApcAsync.cpp" />
-    <ClCompile Include="PingSync.cpp" />
-    <ClCompile Include="StartupCleanup.cpp" />
+    <ClCompile Include="DllMain.c" />
+    <ClCompile Include="CppPingAsync.cpp" />
+    <ClCompile Include="PingSync.c" />
+    <ClCompile Include="CppStartupCleanup.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{21FE3D8B-BDB0-4D17-AC00-E1314EC7DD1A}</ProjectGuid>

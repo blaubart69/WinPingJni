@@ -12,6 +12,8 @@
 #include <IPHlpApi.h>
 #include <IcmpAPI.h>
 
+#include <jni.h>
+
 /*
 typedef
 VOID
@@ -40,11 +42,13 @@ typedef struct {
 
 
 typedef struct {
-									 HANDLE hIcmpFile;
-									 HANDLE hThread;
-	__declspec(align(64))	volatile UINT64  asyncCounter;
-} WIN_PING_GLOBAL;
+	JNIEnv		*env;
+	jobject		Consumer;
+} MY_JNI_CONTEXT;
 
-typedef void(*pingCallback)(IPAddr ip, DWORD roundtrip, int pingStatus, int LastError, void* ctx);
 
-DWORD enqueuePing(const IPAddr ipToPing, const DWORD timeoutMs, const pingCallback callback, const LPVOID callbackContext);
+typedef struct {
+	IPAddr			ip;
+	DWORD			timeoutMs;
+	MY_JNI_CONTEXT  jniCtx;
+} MY_PING_CTX;

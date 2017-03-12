@@ -24,21 +24,30 @@
     <ClInclude Include="WinPingJni.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="CppApcWorker.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CppPingAsync.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DebugPrint.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="StartupCleanup.cpp">
+    <ClCompile Include="DllMain.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="PingSync.cpp">
+    <ClCompile Include="CppApcWorker.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="PingApcAsync.cpp">
+    <ClCompile Include="CppPingAsync.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="DllMain.cpp">
+    <ClCompile Include="CppStartupCleanup.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PingSync.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
