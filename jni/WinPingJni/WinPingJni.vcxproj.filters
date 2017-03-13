@@ -18,36 +18,21 @@
     <ClInclude Include="at_spindi_WinPing.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="DebugPrint.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="WinPingJni.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="CppApcWorker.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="CppPingAsync.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="DebugPrint.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="DllMain.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="CppApcWorker.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="CppPingAsync.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="CppStartupCleanup.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="PingSync.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PingAsync.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="StartupCleanup.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

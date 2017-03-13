@@ -9,7 +9,6 @@
 #include <jni.h>
 
 #include "WinPingJni.h"
-#include "CppApcWorker.h"
 
 WIN_PING_GLOBAL* gWinPing;
 
@@ -27,14 +26,17 @@ JNIEXPORT jint JNICALL Java_at_spindi_WinPing_native_1WinPing_1Startup(JNIEnv *e
 		return GetLastError();
 	}
 
-	env->GetJavaVM(&(gWinPing->vm));
+	(*env)->GetJavaVM(env, &(gWinPing->vm));
 
-	gWinPing->apcWorker = new ApcWorker<MY_PING_CTX>();
+	// async
+	gWinPing->async._itemCounter = -1;
+	gWinPing->async._internalThreadCounter = 0;
+	InitializeCriticalSection(&gWinPing->async._criticalEnqueue);
 
 	return 0;
 }
 
-JNIEXPORT jint JNICALL Java_at_spindi_WinPing_native_1WinPing_1Cleanup(JNIEnv *, jclass) {
+JNIEXPORT jint JNICALL Java_at_spindi_WinPing_native_1WinPing_1Cleanup(JNIEnv *env, jclass clazz) {
 	//
 	// free up resources
 	//
@@ -42,5 +44,10 @@ JNIEXPORT jint JNICALL Java_at_spindi_WinPing_native_1WinPing_1Cleanup(JNIEnv *,
 	if (!IcmpCloseHandle(gWinPing->hIcmpFile)) {
 		rc = GetLastError();
 	}
+
+	DeleteCriticalSection(&gWinPing->async._criticalEnqueue);
+
+	HeapFree(GetProcessHeap(), 0, gWinPing);
+
 	return rc;
 }

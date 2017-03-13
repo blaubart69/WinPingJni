@@ -17,7 +17,9 @@ public class TestJniPingAsync {
 	}
 	
 	@Test
-	public void testSimpleAsync() throws UnknownHostException {
+	public void testSimpleAsync() throws UnknownHostException, InterruptedException {
+		
+		Assert.assertEquals(0, at.spindi.WinPing.Startup());
 		
 		TestResult<WinPingResult> res = new TestResult<>();
 		
@@ -26,10 +28,22 @@ public class TestJniPingAsync {
 				1000,
 				(result) -> {
 					//System.out.printf("callback!");
-					res.result = result;
+					synchronized (res) {
+						res.result = result;
+						res.notify();
+					}
+					
 				});
-		Assert.assertNotNull(res.result);
-		Assert.assertEquals(123, res.result.RoundTripTime);	
+		
+		synchronized (res) {
+			 res.wait();	
+		}
+		
+		Assert.assertTrue( res.result.RoundTripTime > 0);
+		Assert.assertEquals(0, res.result.IpStatus);
+		Assert.assertEquals(0, res.result.LastError);
+		
+		Assert.assertEquals(0, at.spindi.WinPing.Cleanup());
 	}
 
 }

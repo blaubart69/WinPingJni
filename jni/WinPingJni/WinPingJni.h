@@ -42,13 +42,23 @@ typedef struct {
 
 
 typedef struct {
-	JNIEnv		*env;
-	jobject		Consumer;
-} MY_JNI_CONTEXT;
+	IPAddr			ip;
+	DWORD			timeoutMs;
+	MY_ICMP_REPLY	icmpReply;
+	jobject			Consumer;
+} PING_CTX;
 
 
 typedef struct {
-	IPAddr			ip;
-	DWORD			timeoutMs;
-	MY_JNI_CONTEXT  jniCtx;
-} MY_PING_CTX;
+	__declspec(align(64))volatile	long _itemCounter;
+	long				_internalThreadCounter;
+	HANDLE				_hTread;
+	CRITICAL_SECTION	_criticalEnqueue;
+	JNIEnv*				ApcThreadJniEnv;
+} PING_ASYNC;
+
+typedef struct {
+	JavaVM*				vm;
+	HANDLE				hIcmpFile;
+	PING_ASYNC			async;
+} WIN_PING_GLOBAL;

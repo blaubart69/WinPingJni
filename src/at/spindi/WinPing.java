@@ -16,6 +16,13 @@ public class WinPing {
 	private static native int native_icmp_WinPing4     (final int IpAdress, final int timeout); 
 	private static native int native_icmp_WinPing4Async(final int IpAdress, final int timeout, final Consumer<WinPingResult> callback);
 	
+	public static int Startup() {
+		return native_WinPing_Startup();
+	}
+	public static int Cleanup() {
+		return native_WinPing_Cleanup();
+	}
+	
 	public static int ping4(final Inet4Address v4ToPing, final int timeoutMs) {
         return native_icmp_WinPing4(
         		IPv4ToNetworkByteOrder(v4ToPing), 
