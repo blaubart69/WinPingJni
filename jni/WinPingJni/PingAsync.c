@@ -4,52 +4,61 @@
 // global structure initialized via "startup" call
 extern WIN_PING_GLOBAL* gWinPing;
 
-void jniPingCompletedCallback(IPAddr ip, DWORD roundtrip, int pingStatus, int LastError, jobject Consumer);
 DWORD WINAPI ThreadProc(LPVOID lpThreadParameter);
 VOID NTAPI ApcSendPing(ULONG_PTR Parameter);
 VOID NTAPI ApcAttachThreadToJavaVM(ULONG_PTR Parameter);
 DWORD enqueue(PING_CTX* pingCtx);
 
+// -----------------------------------------------------------------------------
+void jniPingCompletedCallback(IPAddr ip, DWORD roundtrip, int pingStatus, int LastError, jobject globalRefobjConsumer) {
+
+	// the JNIenv of the APC thread ("AttachToCurrentThread")
+	const JNIEnv* APCJniEnv = gWinPing->async.ApcThreadJniEnv;
+	//
+	// create return object
+	//            
+	const jclass	WinPingResultClazz = (*APCJniEnv)->FindClass(APCJniEnv, "at/spindi/WinPingResult");
+	const jmethodID WinPingResultCtor = (*APCJniEnv)->GetMethodID(APCJniEnv, WinPingResultClazz, "<init>", "(III)V");
+	const jobject   WinPingResultObj = (*APCJniEnv)->NewObject(APCJniEnv, WinPingResultClazz, WinPingResultCtor, LastError, pingStatus, roundtrip);
+	//
+	// calling the "consumer" callback
+	//
+	const jclass	consumerClass = (*APCJniEnv)->GetObjectClass(APCJniEnv, globalRefobjConsumer);
+	const jmethodID acceptMethod  = (*APCJniEnv)->GetMethodID(APCJniEnv, consumerClass, "accept", "(Ljava/lang/Object;)V");
+	(*APCJniEnv)->CallVoidMethod(APCJniEnv, globalRefobjConsumer, acceptMethod, WinPingResultObj);
+	//
+	// get rid of the global reference
+	//
+	(*APCJniEnv)->DeleteGlobalRef(APCJniEnv, globalRefobjConsumer);
+}
 /*
 * Class:     at_spindi_WinPing
 * Method:    native_icmp_WinPing4Async
 * Signature: (IILjava/util/function/Consumer;)I
 */
 JNIEXPORT jint JNICALL Java_at_spindi_WinPing_native_1icmp_1WinPing4Async
-(JNIEnv *env, jclass clazz, jint bigEndianv4Address, jint timeoutMs, jobject Consumer) {
+(JNIEnv *env, jclass clazz, jint bigEndianv4Address, jint timeoutMs, jobject objConsumer) {
 	//
 	// Do something! Do something! (C) by Schurl
 	//
 	PING_CTX *pingCtx = (PING_CTX*)HeapAlloc(GetProcessHeap(), 0, sizeof(PING_CTX));
-	pingCtx->Consumer = Consumer;
+
 	pingCtx->ip = bigEndianv4Address;
 	pingCtx->timeoutMs = timeoutMs;
+	pingCtx->callingJniEnv = env;
+	pingCtx->globalRefobjConsumer = (*env)->NewGlobalRef(env, objConsumer);
+
+	//const jclass	consumerClass = (*env)->GetObjectClass(env, objConsumer);
+	//const jmethodID acceptMethod = (*env)->GetMethodID(env, consumerClass, "accept", "(Ljava/lang/Object;)V");
+	//pingCtx->acceptMethod = (*env)->GetMethodID(env, consumerClass, "accept", "(Ljava/lang/Object;)V");
 
 	const DWORD enqueueRc = enqueue(pingCtx);
 	if (enqueueRc != 0) {
+		(*env)->DeleteGlobalRef(env, pingCtx->globalRefobjConsumer);
 		HeapFree(GetProcessHeap(), 0, pingCtx);
 	}
 
 	return enqueueRc;
-}
-// -----------------------------------------------------------------------------
-void jniPingCompletedCallback(IPAddr ip, DWORD roundtrip, int pingStatus, int LastError, jobject Consumer) {
-
-	// the JNIenv of the APC thread ("AttachToCurrentThread")
-	JNIEnv* env = gWinPing->async.ApcThreadJniEnv;
-
-	//
-	// create return object
-	//            
-	const jclass	WinPingResultClazz = (*env)->FindClass(env, "at/spindi/WinPingResult");
-	const jmethodID WinPingResultCtor = (*env)->GetMethodID(env, WinPingResultClazz, "<init>", "(III)V");
-	const jobject   WinPingResultObj = (*env)->NewObject(env, WinPingResultClazz, WinPingResultCtor, LastError, pingStatus, roundtrip);
-	//
-	// calling the "consumer" callback
-	//
-	const jclass	consumerClass = (*env)->GetObjectClass(env, Consumer);
-	const jmethodID	acceptMethod = (*env)->GetMethodID(env, consumerClass, "accept", "(Ljava/lang/Object;)V");
-	(*env)->CallVoidMethod(env, Consumer, acceptMethod, WinPingResultObj);
 }
 // -----------------------------------------------------------------------------
 DWORD enqueue(PING_CTX* pingCtx) {
@@ -72,15 +81,15 @@ DWORD enqueue(PING_CTX* pingCtx) {
 			return GetLastError();
 		}
 		//
-		// queue the "special" first APC user call
+		// queue the "special" first APC user call after thread creation. "jni->AttachCurrentThread()"
 		//
-		if (QueueUserAPC(ApcAttachThreadToJavaVM, pAsync->_hTread, (ULONG_PTR)NULL) != 0) {
+		if (QueueUserAPC(ApcAttachThreadToJavaVM, pAsync->_hTread, (ULONG_PTR)NULL) == 0) {
 			return GetLastError();
 		}
 	}
 	LeaveCriticalSection(&pAsync->_criticalEnqueue);
 
-	if (QueueUserAPC(ApcSendPing, pAsync->_hTread, (ULONG_PTR)pingCtx) != 0) {
+	if (QueueUserAPC(ApcSendPing, pAsync->_hTread, (ULONG_PTR)pingCtx) == 0) {
 		return GetLastError();
 	}
 
@@ -122,13 +131,14 @@ DWORD WINAPI ThreadProc(LPVOID lpThreadParameter) {
 			//	we will do it in the enqueue() function
 			//	when the new thread is started there are NO MORE APC callbacks!
 			//	so no one is incrementing this counter
+			//
 			//_internalThreadCounter = 0;
 
 			break;
 		}
 	}
 
-	(*gWinPing->vm)->DetachCurrentThread(gWinPing->vm);
+	const jint detachRc = (*gWinPing->vm)->DetachCurrentThread(gWinPing->vm);
 
 	return 0;
 }
@@ -146,13 +156,13 @@ VOID NTAPI ApcOnPingCompleted(IN PVOID ApcContext, IN PIO_STATUS_BLOCK IoStatusB
 	}
 
 	IPAddr ip = pingCtx->ip;
-	jobject Consumer = pingCtx->Consumer;
+	jobject globalRefConsumer = pingCtx->globalRefobjConsumer;
 	//
 	// free resources BEFORE callback
 	//
 	HeapFree(GetProcessHeap(), 0, pingCtx);
 
-	jniPingCompletedCallback(ip, roundtrip, ipStatus, GetLastError(), Consumer);
+	jniPingCompletedCallback(ip, roundtrip, ipStatus, 0, globalRefConsumer);
 }
 // -----------------------------------------------------------------------------
 VOID NTAPI ApcSendPing(ULONG_PTR Parameter) {
@@ -176,19 +186,35 @@ VOID NTAPI ApcSendPing(ULONG_PTR Parameter) {
 		(LPVOID)&(pingCtx->icmpReply.reply),
 		sizeof(MY_ICMP_REPLY),
 		pingCtx->timeoutMs);
+	/*
+		When called asynchronously, the IcmpSendEcho2 function returns ERROR_IO_PENDING to indicate the operation is in progress. The results can be retrieved later when the event specified in the Event parameter signals or the callback function in the ApcRoutine parameter is called.
+		If the return value is zero, call GetLastError for extended error information.
+		If the function fails, the extended error code returned by GetLastError can be one of the following values.
+		...
+		ERROR_IO_PENDING
+		...
 
+		--> this all means, WHEN we get an RC != ERROR_IO_PENDING
+			THEN the GetLastError() could also be ERROR_IO_PENDING and does mean NO_ERROR!!! (grrrr!)
+	*/
 	if (rcSendecho != ERROR_IO_PENDING) {
-		int sendError = GetLastError();
+		// MAYBE an error. Check again.
+		const int send2LastError = GetLastError();
 
-		IPAddr ip = pingCtx->ip;
-		jobject ConsumerMethod = pingCtx->Consumer;
-
-		//
-		// clean up BEFORE calling the callback
-		//
-		HeapFree(GetProcessHeap(), 0, pingCtx);
-
-		jniPingCompletedCallback(ip, 0, -1, sendError, ConsumerMethod);
+		//  check again if IO_PENDING
+		if (send2LastError != ERROR_IO_PENDING) {
+			//
+			// some error occured. APC will not be called.
+			// clean up here
+			//
+			IPAddr ip = pingCtx->ip;
+			jobject globalRefobjConsumer = pingCtx->globalRefobjConsumer;
+			//
+			// clean up BEFORE calling the callback
+			//
+			HeapFree(GetProcessHeap(), 0, pingCtx);
+			jniPingCompletedCallback(ip, 0, -1, send2LastError, globalRefobjConsumer);
+		}
 	}
 }
 
@@ -196,14 +222,16 @@ void NTAPI ApcAttachThreadToJavaVM(ULONG_PTR Parameter) {
 	//JNIEnv* myNewEnv;
 	JavaVMAttachArgs args;
 	args.version = JNI_VERSION_1_6; // choose your JNI version
-	args.name = NULL; // you might want to give the java thread a name
+	args.name = "WinPingApcPing"; // you might want to give the java thread a name
 	args.group = NULL; // you might want to assign the java thread to a ThreadGroup
 	
 	//(*gWinPing->vm)->AttachCurrentThread(gWinPing->vm, (void**)(&myNewEnv), &args);
-	(*gWinPing->vm)->AttachCurrentThread(
-		gWinPing->vm, 
-		(void**)(&(gWinPing->async.ApcThreadJniEnv)), 
-		&args);
+	const jint attachRc = 
+		(*gWinPing->vm)->AttachCurrentThread(
+			gWinPing->vm, 
+			(void**)(&(gWinPing->async.ApcThreadJniEnv)), 
+			&args);
+
 }
 
 

@@ -45,7 +45,8 @@ typedef struct {
 	IPAddr			ip;
 	DWORD			timeoutMs;
 	MY_ICMP_REPLY	icmpReply;
-	jobject			Consumer;
+	JNIEnv*			callingJniEnv;
+	jobject			globalRefobjConsumer;
 } PING_CTX;
 
 

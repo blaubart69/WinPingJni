@@ -40,12 +40,12 @@ JNIEXPORT jint JNICALL Java_at_spindi_WinPing_native_1WinPing_1Cleanup(JNIEnv *e
 	//
 	// free up resources
 	//
+	DeleteCriticalSection(&gWinPing->async._criticalEnqueue);
+
 	jint rc = 0;
 	if (!IcmpCloseHandle(gWinPing->hIcmpFile)) {
 		rc = GetLastError();
 	}
-
-	DeleteCriticalSection(&gWinPing->async._criticalEnqueue);
 
 	HeapFree(GetProcessHeap(), 0, gWinPing);
 
