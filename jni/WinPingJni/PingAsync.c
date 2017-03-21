@@ -13,12 +13,12 @@ DWORD enqueue(PING_CTX* pingCtx);
 void jniPingCompletedCallback(IPAddr ip, DWORD roundtrip, int pingStatus, int LastError, jobject globalRefobjConsumer) {
 
 	// the JNIenv of the APC thread ("AttachToCurrentThread")
-	const JNIEnv* APCJniEnv = gWinPing->async.ApcThreadJniEnv;
+	JNIEnv* APCJniEnv = gWinPing->async.ApcThreadJniEnv;
 	//
 	// create return object
 	//            
-	const jclass	WinPingResultClazz = (*APCJniEnv)->FindClass(APCJniEnv, "at/spindi/WinPingResult");
-	const jmethodID WinPingResultCtor = (*APCJniEnv)->GetMethodID(APCJniEnv, WinPingResultClazz, "<init>", "(III)V");
+	jclass	WinPingResultClazz = (*APCJniEnv)->FindClass(APCJniEnv, "at/spindi/WinPingResult");
+	jmethodID WinPingResultCtor = (*APCJniEnv)->GetMethodID(APCJniEnv, WinPingResultClazz, "<init>", "(III)V");
 	const jobject   WinPingResultObj = (*APCJniEnv)->NewObject(APCJniEnv, WinPingResultClazz, WinPingResultCtor, LastError, pingStatus, roundtrip);
 	//
 	// calling the "consumer" callback
@@ -37,7 +37,7 @@ void jniPingCompletedCallback(IPAddr ip, DWORD roundtrip, int pingStatus, int La
 * Signature: (IILjava/util/function/Consumer;)I
 */
 JNIEXPORT jint JNICALL Java_at_spindi_WinPing_native_1icmp_1WinPing4Async
-(JNIEnv *env, jclass clazz, jint bigEndianv4Address, jint timeoutMs, jobject objConsumer) {
+(JNIEnv *env, const jclass clazz, const jint bigEndianv4Address, const jint timeoutMs, const jobject objConsumer) {
 	//
 	// Do something! Do something! (C) by Schurl
 	//
@@ -45,12 +45,7 @@ JNIEXPORT jint JNICALL Java_at_spindi_WinPing_native_1icmp_1WinPing4Async
 
 	pingCtx->ip = bigEndianv4Address;
 	pingCtx->timeoutMs = timeoutMs;
-	pingCtx->callingJniEnv = env;
 	pingCtx->globalRefobjConsumer = (*env)->NewGlobalRef(env, objConsumer);
-
-	//const jclass	consumerClass = (*env)->GetObjectClass(env, objConsumer);
-	//const jmethodID acceptMethod = (*env)->GetMethodID(env, consumerClass, "accept", "(Ljava/lang/Object;)V");
-	//pingCtx->acceptMethod = (*env)->GetMethodID(env, consumerClass, "accept", "(Ljava/lang/Object;)V");
 
 	const DWORD enqueueRc = enqueue(pingCtx);
 	if (enqueueRc != 0) {
@@ -187,7 +182,9 @@ VOID NTAPI ApcSendPing(ULONG_PTR Parameter) {
 		sizeof(MY_ICMP_REPLY),
 		pingCtx->timeoutMs);
 	/*
-		When called asynchronously, the IcmpSendEcho2 function returns ERROR_IO_PENDING to indicate the operation is in progress. The results can be retrieved later when the event specified in the Event parameter signals or the callback function in the ApcRoutine parameter is called.
+		When called asynchronously, the IcmpSendEcho2 function returns ERROR_IO_PENDING to indicate the operation is in progress. 
+		The results can be retrieved later when the event specified in the Event parameter signals or the callback function 
+		in the ApcRoutine parameter is called.
 		If the return value is zero, call GetLastError for extended error information.
 		If the function fails, the extended error code returned by GetLastError can be one of the following values.
 		...
