@@ -5,7 +5,7 @@
 extern WIN_PING_GLOBAL* gWinPing;
 
 DWORD WINAPI ThreadProc(LPVOID lpThreadParameter);
-VOID NTAPI ApcSendPing(ULONG_PTR Parameter);
+VOID NTAPI ApcSendPingAsync(ULONG_PTR Parameter);
 VOID NTAPI ApcAttachThreadToJavaVM(ULONG_PTR Parameter);
 DWORD enqueue(PING_CTX* pingCtx);
 
@@ -43,9 +43,9 @@ JNIEXPORT jint JNICALL Java_at_spindi_WinPing_native_1icmp_1WinPing4Async
 	//
 	PING_CTX *pingCtx = (PING_CTX*)HeapAlloc(GetProcessHeap(), 0, sizeof(PING_CTX));
 
-	pingCtx->ip = bigEndianv4Address;
-	pingCtx->timeoutMs = timeoutMs;
-	pingCtx->globalRefobjConsumer = (*env)->NewGlobalRef(env, objConsumer);
+	pingCtx->ip						= bigEndianv4Address;
+	pingCtx->timeoutMs				= timeoutMs;
+	pingCtx->globalRefobjConsumer	= (*env)->NewGlobalRef(env, objConsumer);
 
 	const DWORD enqueueRc = enqueue(pingCtx);
 	if (enqueueRc != 0) {
@@ -79,12 +79,13 @@ DWORD enqueue(PING_CTX* pingCtx) {
 		// queue the "special" first APC user call after thread creation. "jni->AttachCurrentThread()"
 		//
 		if (QueueUserAPC(ApcAttachThreadToJavaVM, pAsync->_hTread, (ULONG_PTR)NULL) == 0) {
+			LeaveCriticalSection(&pAsync->_criticalEnqueue);
 			return GetLastError();
 		}
 	}
 	LeaveCriticalSection(&pAsync->_criticalEnqueue);
 
-	if (QueueUserAPC(ApcSendPing, pAsync->_hTread, (ULONG_PTR)pingCtx) == 0) {
+	if (QueueUserAPC(ApcSendPingAsync, pAsync->_hTread, (ULONG_PTR)pingCtx) == 0) {
 		return GetLastError();
 	}
 
@@ -105,6 +106,9 @@ DWORD WINAPI ThreadProc(LPVOID lpThreadParameter) {
 		//
 		// try to write -1 to the global counter
 		//
+
+		EnterCriticalSection(&gWinPing->async._criticalShutdown);
+
 		if (_InterlockedCompareExchange(
 			&pAsync->_itemCounter,
 			-1,
@@ -131,9 +135,17 @@ DWORD WINAPI ThreadProc(LPVOID lpThreadParameter) {
 
 			break;
 		}
+
+		LeaveCriticalSection(&gWinPing->async._criticalShutdown);
 	}
 
 	const jint detachRc = (*gWinPing->vm)->DetachCurrentThread(gWinPing->vm);
+	BOOL shutdownRequested = gWinPing->async._shutdownRequested;
+	LeaveCriticalSection(&gWinPing->async._criticalShutdown);
+
+	if (shutdownRequested) {
+		FreePingResouces();
+	}
 
 	return 0;
 }
@@ -160,7 +172,7 @@ VOID NTAPI ApcOnPingCompleted(IN PVOID ApcContext, IN PIO_STATUS_BLOCK IoStatusB
 	jniPingCompletedCallback(ip, roundtrip, ipStatus, 0, globalRefConsumer);
 }
 // -----------------------------------------------------------------------------
-VOID NTAPI ApcSendPing(ULONG_PTR Parameter) {
+VOID NTAPI ApcSendPingAsync(ULONG_PTR Parameter) {
 
 	gWinPing->async._internalThreadCounter += 1;
 

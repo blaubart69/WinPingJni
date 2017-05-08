@@ -32,17 +32,35 @@ JNIEXPORT jint JNICALL Java_at_spindi_WinPing_native_1WinPing_1Startup(JNIEnv *e
 	gWinPing->async._itemCounter = -1;
 	gWinPing->async._internalThreadCounter = 0;
 	InitializeCriticalSection(&gWinPing->async._criticalEnqueue);
+	InitializeCriticalSection(&gWinPing->async._criticalShutdown);
+	gWinPing->async._shutdownRequested = FALSE;
 
 	return 0;
 }
 
 JNIEXPORT jint JNICALL Java_at_spindi_WinPing_native_1WinPing_1Cleanup(JNIEnv *env, jclass clazz) {
-	//
-	// free up resources
-	//
-	DeleteCriticalSection(&gWinPing->async._criticalEnqueue);
 
 	jint rc = 0;
+
+	EnterCriticalSection(&gWinPing->async._criticalShutdown);
+	if (gWinPing->async._itemCounter == -1) {
+		LeaveCriticalSection(&gWinPing->async._criticalShutdown);
+		rc = FreePingResouces();
+	}
+	else {
+		gWinPing->async._shutdownRequested = TRUE;
+		LeaveCriticalSection(&gWinPing->async._criticalShutdown);
+		rc = 4;  // pending shutdown
+	}
+
+	return rc;
+}
+
+DWORD FreePingResouces() {
+	DeleteCriticalSection(&gWinPing->async._criticalEnqueue);
+	DeleteCriticalSection(&gWinPing->async._criticalShutdown);
+
+	DWORD rc = 0;
 	if (!IcmpCloseHandle(gWinPing->hIcmpFile)) {
 		rc = GetLastError();
 	}

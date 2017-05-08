@@ -62,6 +62,8 @@ typedef struct {
 	long				_internalThreadCounter;
 	HANDLE				_hTread;
 	CRITICAL_SECTION	_criticalEnqueue;
+	CRITICAL_SECTION	_criticalShutdown;
+	BOOL				_shutdownRequested;
 	JNIEnv*				ApcThreadJniEnv;
 } PING_ASYNC;
 
@@ -70,3 +72,5 @@ typedef struct {
 	HANDLE				hIcmpFile;
 	PING_ASYNC			async;
 } WIN_PING_GLOBAL;
+
+DWORD FreePingResouces();
