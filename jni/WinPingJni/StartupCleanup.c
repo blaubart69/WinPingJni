@@ -22,18 +22,15 @@ JNIEXPORT jint JNICALL Java_at_spindi_WinPing_native_1WinPing_1Startup(JNIEnv *e
 
 	gWinPing->hIcmpFile = IcmpCreateFile();
 	if (gWinPing->hIcmpFile == INVALID_HANDLE_VALUE) {
-		gWinPing->hIcmpFile = NULL;
 		return GetLastError();
 	}
 
 	(*env)->GetJavaVM(env, &(gWinPing->vm));
 
 	// async
-	gWinPing->async._itemCounter = -1;
-	gWinPing->async._internalThreadCounter = 0;
+	gWinPing->async._enqueuedPings	= 0;
+	gWinPing->async._sentPings		= 0;
 	InitializeCriticalSection(&gWinPing->async._criticalEnqueue);
-	InitializeCriticalSection(&gWinPing->async._criticalShutdown);
-	gWinPing->async._shutdownRequested = FALSE;
 
 	return 0;
 }
@@ -42,15 +39,11 @@ JNIEXPORT jint JNICALL Java_at_spindi_WinPing_native_1WinPing_1Cleanup(JNIEnv *e
 
 	jint rc = 0;
 
-	EnterCriticalSection(&gWinPing->async._criticalShutdown);
-	if (gWinPing->async._itemCounter == -1) {
-		LeaveCriticalSection(&gWinPing->async._criticalShutdown);
+	if (gWinPing->async._enqueuedPings == 0) {
 		rc = FreePingResouces();
 	}
 	else {
-		gWinPing->async._shutdownRequested = TRUE;
-		LeaveCriticalSection(&gWinPing->async._criticalShutdown);
-		rc = 4;  // pending shutdown
+		rc = 4;  
 	}
 
 	return rc;
@@ -58,7 +51,6 @@ JNIEXPORT jint JNICALL Java_at_spindi_WinPing_native_1WinPing_1Cleanup(JNIEnv *e
 
 DWORD FreePingResouces() {
 	DeleteCriticalSection(&gWinPing->async._criticalEnqueue);
-	DeleteCriticalSection(&gWinPing->async._criticalShutdown);
 
 	DWORD rc = 0;
 	if (!IcmpCloseHandle(gWinPing->hIcmpFile)) {
