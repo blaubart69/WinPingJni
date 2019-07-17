@@ -23,9 +23,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="DllMain.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="PingSync.c">
       <Filter>Source Files</Filter>
     </ClCompile>

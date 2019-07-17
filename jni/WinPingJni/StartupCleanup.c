@@ -11,53 +11,72 @@
 #include "WinPingJni.h"
 
 WIN_PING_GLOBAL* gWinPing;
+DWORD WINAPI ThreadProc(LPVOID lpThreadParameter);
+
+
 
 JNIEXPORT jint JNICALL Java_at_spindi_WinPing_native_1WinPing_1Startup(JNIEnv *env, jclass clazz) {
 
+	DWORD rc = 0;
+
 	gWinPing = (WIN_PING_GLOBAL*)HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, sizeof(WIN_PING_GLOBAL));
 	if (gWinPing == NULL) {
-		// TODO: maybe a better retcode here
-		return 1;
+		rc = ERROR_OUTOFMEMORY;
+		goto fail;
 	}
 
 	gWinPing->hIcmpFile = IcmpCreateFile();
 	if (gWinPing->hIcmpFile == INVALID_HANDLE_VALUE) {
-		return GetLastError();
+		goto fail;
 	}
 
 	(*env)->GetJavaVM(env, &(gWinPing->vm));
 
-	// async
-	gWinPing->async._enqueuedPings	= 0;
-	gWinPing->async._sentPings		= 0;
-	InitializeCriticalSection(&gWinPing->async._criticalEnqueue);
+	PING_ASYNC* pAsync = &(gWinPing->async);
 
-	return 0;
+	pAsync->_hTread = CreateThread(NULL, 1, (LPTHREAD_START_ROUTINE)ThreadProc, NULL, 0, NULL);
+	if (pAsync->_hTread == NULL) {
+		goto fail;
+	}
+
+	/*
+	if (QueueUserAPC(ApcAttachThreadToJavaVM, pAsync->_hTread, (ULONG_PTR)NULL) == 0) {
+		goto fail;
+	}
+	*/
+
+	gWinPing->shutdownEvent = CreateEvent(NULL, TRUE, FALSE, L"WinPingApcEndEvent");
+	if (gWinPing->shutdownEvent == NULL)
+	{
+		goto fail;
+	}
+
+	goto ok;
+
+fail:
+	if (rc == 0) {
+		rc = GetLastError();
+	}
+
+ok:
+
+	return rc;
 }
 
 JNIEXPORT jint JNICALL Java_at_spindi_WinPing_native_1WinPing_1Cleanup(JNIEnv *env, jclass clazz) {
 
-	jint rc = 0;
+	DWORD rc = 0;
 
-	if (gWinPing->async._enqueuedPings == 0) {
-		rc = FreePingResouces();
-	}
-	else {
-		rc = 4;  
+	if (!SetEvent(gWinPing->shutdownEvent)) {
+		rc = GetLastError();
 	}
 
 	return rc;
 }
 
-DWORD FreePingResouces() {
-	DeleteCriticalSection(&gWinPing->async._criticalEnqueue);
-
-	DWORD rc = 0;
-	if (!IcmpCloseHandle(gWinPing->hIcmpFile)) {
-		rc = GetLastError();
-	}
-
-	HeapFree(GetProcessHeap(), 0, gWinPing);
-
-	return rc;
+BOOLEAN WINAPI
+DllMain(IN HINSTANCE hDllHandle, IN DWORD nReason, IN LPVOID Reserved)
+{
+	BOOLEAN bSuccess = TRUE;
+	return bSuccess;
 }

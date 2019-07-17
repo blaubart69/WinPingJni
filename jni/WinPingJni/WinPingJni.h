@@ -58,19 +58,13 @@ typedef struct {
 
 
 typedef struct {
-	__declspec(align(64))volatile	long _enqueuedPings;
-									long _sentPings;
 	HANDLE				_hTread;
-	CRITICAL_SECTION	_criticalEnqueue;
-	//CRITICAL_SECTION	_criticalShutdown;
-	//BOOL				_shutdownRequested;
 	JNIEnv*				ApcThreadJniEnv;
 } PING_ASYNC;
 
 typedef struct {
 	JavaVM*				vm;
 	HANDLE				hIcmpFile;
+	HANDLE				shutdownEvent;
 	PING_ASYNC			async;
 } WIN_PING_GLOBAL;
-
-DWORD FreePingResouces();

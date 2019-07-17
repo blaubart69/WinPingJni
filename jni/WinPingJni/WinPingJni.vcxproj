@@ -23,7 +23,6 @@
     <ClInclude Include="WinPingJni.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="DllMain.c" />
     <ClCompile Include="PingAsync.c" />
     <ClCompile Include="PingSync.c" />
     <ClCompile Include="StartupCleanup.c" />
@@ -151,7 +150,7 @@
       <WarningLevel>Level3</WarningLevel>
       <PrecompiledHeader>
       </PrecompiledHeader>
-      <Optimization>MaxSpeed</Optimization>
+      <Optimization>MinSpace</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -167,6 +166,7 @@
       <AdditionalDependencies>iphlpapi.lib;kernel32.lib</AdditionalDependencies>
       <IgnoreAllDefaultLibraries>true</IgnoreAllDefaultLibraries>
       <EntryPointSymbol>DllMain</EntryPointSymbol>
+      <GenerateMapFile>true</GenerateMapFile>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
