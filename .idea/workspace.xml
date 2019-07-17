@@ -1,0 +1,391 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="ac943968-33ff-4dfb-b724-0e75f71ee8e8" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/src/test/JniPingSync.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/JniPingSync.java" afterDir="false" />
+    </list>
+    <ignored path="$PROJECT_DIR$/out/" />
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="DefaultGradleProjectSettings">
+    <option name="testRunner" value="GRADLE" />
+    <option name="delegatedBuild" value="true" />
+  </component>
+  <component name="FileEditorManager">
+    <leaf>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/test/JniPingSync.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="382">
+              <caret line="35" column="8" selection-start-line="35" selection-start-column="8" selection-end-line="35" selection-end-column="8" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/test/TestJniPingAsync.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="266">
+              <caret line="42" selection-start-line="42" selection-end-line="42" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+    </leaf>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="IdeDocumentHistory">
+    <option name="CHANGED_PATHS">
+      <list>
+        <option value="$PROJECT_DIR$/src/test/JniPingSync.java" />
+      </list>
+    </option>
+  </component>
+  <component name="JavaAutoRunManager">
+    <enabled-run-configurations>
+      <run-configuration type="JUnit" name="TestJniPingAsync.testAsyncLocalhost" />
+    </enabled-run-configurations>
+  </component>
+  <component name="MacroExpansionManager">
+    <option name="directoryName" value="ElhWgQVP" />
+  </component>
+  <component name="ProjectFrameBounds" extendedState="6">
+    <option name="x" value="155" />
+    <option name="width" value="2410" />
+    <option name="height" value="1450" />
+  </component>
+  <component name="ProjectView">
+    <navigator proportions="" version="1">
+      <foldersAlwaysOnTop value="true" />
+    </navigator>
+    <panes>
+      <pane id="PackagesPane" />
+      <pane id="Scope" />
+      <pane id="ProjectPane">
+        <subPane>
+          <expand>
+            <path>
+              <item name="WinPingJni" type="b2602c69:ProjectViewProjectNode" />
+              <item name="WinPingJni" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="WinPingJni" type="b2602c69:ProjectViewProjectNode" />
+              <item name="WinPingJni" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="WinPingJni" type="b2602c69:ProjectViewProjectNode" />
+              <item name="WinPingJni" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="spindi" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="WinPingJni" type="b2602c69:ProjectViewProjectNode" />
+              <item name="WinPingJni" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="test" type="462c0819:PsiDirectoryNode" />
+            </path>
+          </expand>
+          <select />
+        </subPane>
+      </pane>
+    </panes>
+  </component>
+  <component name="PropertiesComponent">
+    <property name="Downloaded.Files.Path.Enabled" value="false" />
+    <property name="Repository.Attach.Annotations" value="false" />
+    <property name="Repository.Attach.JavaDocs" value="false" />
+    <property name="Repository.Attach.Sources" value="false" />
+  </component>
+  <component name="RunDashboard">
+    <option name="ruleStates">
+      <list>
+        <RuleState>
+          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
+        </RuleState>
+        <RuleState>
+          <option name="name" value="StatusDashboardGroupingRule" />
+        </RuleState>
+      </list>
+    </option>
+  </component>
+  <component name="RunManager" selected="JUnit.TestJniPingAsync">
+    <configuration name="JniPingSync" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="WinPingJni" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="test.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="test" />
+      <option name="MAIN_CLASS_NAME" value="test.JniPingSync" />
+      <option name="METHOD_NAME" value="testOnePing" />
+      <option name="TEST_OBJECT" value="class" />
+      <option name="VM_PARAMETERS" value="-ea -Djava.library.path=&quot;./jni/x64/Debug&quot;" />
+      <option name="PARAMETERS" value="" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="JniPingSync.testOnePing" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="WinPingJni" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="test.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="test" />
+      <option name="MAIN_CLASS_NAME" value="test.JniPingSync" />
+      <option name="METHOD_NAME" value="testOnePing" />
+      <option name="TEST_OBJECT" value="method" />
+      <option name="VM_PARAMETERS" value="-ea -Djava.library.path=&quot;./jni/x64/Debug&quot;" />
+      <option name="PARAMETERS" value="" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="TestJniPingAsync" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="WinPingJni" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="test.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="test" />
+      <option name="MAIN_CLASS_NAME" value="test.TestJniPingAsync" />
+      <option name="METHOD_NAME" value="" />
+      <option name="TEST_OBJECT" value="class" />
+      <option name="VM_PARAMETERS" value="-ea -Djava.library.path=&quot;./jni/x64/Debug&quot;" />
+      <option name="PARAMETERS" value="" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="TestJniPingAsync.testAsyncLocalhost" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="WinPingJni" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="test.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="test" />
+      <option name="MAIN_CLASS_NAME" value="test.TestJniPingAsync" />
+      <option name="METHOD_NAME" value="testAsyncLocalhost" />
+      <option name="TEST_OBJECT" value="method" />
+      <option name="VM_PARAMETERS" value="-ea -Djava.library.path=&quot;./jni/x64/Debug&quot;" />
+      <option name="PARAMETERS" value="" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="test in WinPingJni" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="WinPingJni" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="test.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="test" />
+      <option name="MAIN_CLASS_NAME" value="" />
+      <option name="METHOD_NAME" value="" />
+      <option name="TEST_OBJECT" value="package" />
+      <option name="VM_PARAMETERS" value="-ea -Djava.library.path=&quot;WinPing/jni/x64/Debug&quot;" />
+      <option name="PARAMETERS" value="" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="test in WinPingJni" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="WinPingJni" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="test.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="test" />
+      <option name="MAIN_CLASS_NAME" value="" />
+      <option name="METHOD_NAME" value="" />
+      <option name="TEST_OBJECT" value="package" />
+      <option name="VM_PARAMETERS" value="-ea -Djava.library.path=&quot;./jni/x64/Debug&quot;" />
+      <option name="PARAMETERS" value="" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="test in WinPingJni" type="JUnit" factoryName="JUnit" nameIsGenerated="true">
+      <module name="WinPingJni" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="test.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="test" />
+      <option name="MAIN_CLASS_NAME" value="" />
+      <option name="METHOD_NAME" value="" />
+      <option name="TEST_OBJECT" value="package" />
+      <option name="VM_PARAMETERS" value="-ea -Djava.library.path=&quot;./jni/x64/Debug&quot;" />
+      <option name="PARAMETERS" value="" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <list>
+      <item itemvalue="JUnit.test in WinPingJni" />
+      <item itemvalue="JUnit.TestJniPingAsync" />
+      <item itemvalue="JUnit.JniPingSync.testOnePing" />
+      <item itemvalue="JUnit.JniPingSync" />
+      <item itemvalue="JUnit.TestJniPingAsync.testAsyncLocalhost" />
+    </list>
+    <recent_temporary>
+      <list>
+        <item itemvalue="JUnit.TestJniPingAsync" />
+        <item itemvalue="JUnit.TestJniPingAsync.testAsyncLocalhost" />
+        <item itemvalue="JUnit.JniPingSync" />
+        <item itemvalue="JUnit.JniPingSync.testOnePing" />
+        <item itemvalue="JUnit.test in WinPingJni" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="ac943968-33ff-4dfb-b724-0e75f71ee8e8" name="Default Changelist" comment="" />
+      <created>1563398382154</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1563398382154</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="TestHistory">
+    <history-entry file="test_in_WinPingJni - 2019.07.17 at 23h 36m 42s.xml">
+      <configuration name="test in WinPingJni" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="TestJniPingAsync_testAsyncLocalhost - 2019.07.17 at 23h 38m 45s.xml">
+      <configuration name="TestJniPingAsync.testAsyncLocalhost" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="test_in_WinPingJni - 2019.07.17 at 23h 39m 02s.xml">
+      <configuration name="test in WinPingJni" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="JniPingSync_testOnePing - 2019.07.17 at 23h 39m 19s.xml">
+      <configuration name="JniPingSync.testOnePing" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="JniPingSync - 2019.07.17 at 23h 39m 42s.xml">
+      <configuration name="JniPingSync" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="TestJniPingAsync_testAsyncLocalhost - 2019.07.17 at 23h 43m 18s.xml">
+      <configuration name="TestJniPingAsync.testAsyncLocalhost" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="TestJniPingAsync_testAsyncLocalhost - 2019.07.17 at 23h 47m 24s.xml">
+      <configuration name="TestJniPingAsync.testAsyncLocalhost" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="TestJniPingAsync_testAsyncLocalhost - 2019.07.17 at 23h 50m 00s.xml">
+      <configuration name="TestJniPingAsync.testAsyncLocalhost" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="TestJniPingAsync_testAsyncLocalhost - 2019.07.17 at 23h 51m 20s.xml">
+      <configuration name="TestJniPingAsync.testAsyncLocalhost" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="TestJniPingAsync - 2019.07.17 at 23h 51m 29s.xml">
+      <configuration name="TestJniPingAsync" configurationId="JUnit" />
+    </history-entry>
+  </component>
+  <component name="ToolWindowManager">
+    <frame x="62" y="-7" width="1994" height="1166" extended-state="6" />
+    <editor active="true" />
+    <layout>
+      <window_info id="Designer" />
+      <window_info id="Favorites" side_tool="true" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.25594622" />
+      <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
+      <window_info anchor="bottom" id="Version Control" />
+      <window_info anchor="bottom" id="Terminal" weight="0.32978722" />
+      <window_info anchor="bottom" id="Event Log" side_tool="true" />
+      <window_info anchor="bottom" id="Messages" />
+      <window_info anchor="bottom" id="Message" order="0" />
+      <window_info anchor="bottom" id="Find" order="1" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.2852998" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.32688588" />
+      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
+      <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
+      <window_info anchor="bottom" id="TODO" order="6" />
+      <window_info anchor="right" id="Cargo" />
+      <window_info anchor="right" id="Maven" />
+      <window_info anchor="right" id="Palette&#9;" />
+      <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
+      <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
+      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
+    </layout>
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/test/TestJniPingAsync.java</url>
+          <line>42</line>
+          <properties />
+          <option name="timeStamp" value="2" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
+  <component name="editorHistoryManager">
+    <entry file="jar://$MAVEN_REPOSITORY$/junit/junit/4.12/junit-4.12.jar!/org/junit/Assert.class">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/JniPingSync.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="382">
+          <caret line="35" column="8" selection-start-line="35" selection-start-column="8" selection-end-line="35" selection-end-column="8" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://C:/Program Files/Java/jdk1.8.0_201/src.zip!/java/util/function/Consumer.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="223">
+          <caret line="48" column="9" selection-start-line="48" selection-start-column="9" selection-end-line="48" selection-end-column="9" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/TestJniPingAsync.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="266">
+          <caret line="42" selection-start-line="42" selection-end-line="42" />
+        </state>
+      </provider>
+    </entry>
+  </component>
+  <component name="masterDetails">
+    <states>
+      <state key="ProjectJDKs.UI">
+        <settings>
+          <last-edited>1.8</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+    </states>
+  </component>
+</project>
