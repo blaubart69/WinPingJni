@@ -6,31 +6,14 @@ extern WIN_PING_GLOBAL* gWinPing;
 
 DWORD	WINAPI	ThreadProc(LPVOID lpThreadParameter);
 VOID	NTAPI	ApcSendPingAsync(ULONG_PTR Parameter);
-VOID	NTAPI	ApcAttachThreadToJavaVM(ULONG_PTR Parameter);
 DWORD			enqueue(PING_CTX* pingCtx);
-
-// -----------------------------------------------------------------------------
-void NTAPI ApcAttachThreadToJavaVM(ULONG_PTR Parameter) {
-// -----------------------------------------------------------------------------
-	JavaVMAttachArgs args;
-	args.version = JNI_VERSION_1_6; // choose your JNI version
-	args.name = "WinPingApcPing"; // you might want to give the java thread a name
-	args.group = NULL; // you might want to assign the java thread to a ThreadGroup
-
-	//(*gWinPing->vm)->AttachCurrentThread(gWinPing->vm, (void**)(&myNewEnv), &args);
-	const jint attachRc =
-		(*gWinPing->vm)->AttachCurrentThread(
-			gWinPing->vm,
-			(void**)(&(gWinPing->async.ApcThreadJniEnv)),
-			&args);
-}
 
 // -----------------------------------------------------------------------------
 void jniPingCompletedCallback(IPAddr ip, DWORD roundtrip, int pingStatus, int LastError, jobject globalRefobjConsumer) {
 // -----------------------------------------------------------------------------
 
 	// the JNIenv of the APC thread ("AttachToCurrentThread")
-	JNIEnv* APCJniEnv = gWinPing->async.ApcThreadJniEnv;
+	JNIEnv* APCJniEnv = gWinPing->ApcJniEnv;
 	//
 	// create return object
 	//            
@@ -73,7 +56,7 @@ JNIEXPORT jint JNICALL Java_at_spindi_WinPing_native_1icmp_1WinPing4Async
 	pingCtx->globalRefobjConsumer	= (*env)->NewGlobalRef(env, objConsumer);
 
 	DWORD rc = 0;
-	if (QueueUserAPC(ApcSendPingAsync, gWinPing->async._hTread, (ULONG_PTR)pingCtx) == 0) {
+	if (QueueUserAPC(ApcSendPingAsync, gWinPing->hTread, (ULONG_PTR)pingCtx) == 0) {
 		rc = GetLastError();
 		(*env)->DeleteGlobalRef(env, pingCtx->globalRefobjConsumer);
 		HeapFree(GetProcessHeap(), 0, pingCtx);
@@ -91,11 +74,13 @@ DWORD WINAPI ThreadProc(LPVOID lpThreadParameter) {
 	args.name = "WinPingApcPing"; // you might want to give the java thread a name
 	args.group = NULL; // you might want to assign the java thread to a ThreadGroup
 
+	JNIEnv* jniEnv;
+
 	//(*gWinPing->vm)->AttachCurrentThread(gWinPing->vm, (void**)(&myNewEnv), &args);
 	const jint attachRc =
 		(*gWinPing->vm)->AttachCurrentThread(
 			gWinPing->vm,
-			(void**)(&(gWinPing->async.ApcThreadJniEnv)),
+			(void**)(&(gWinPing->ApcJniEnv)),
 			&args);
 
 	while (WaitForSingleObjectEx(gWinPing->shutdownEvent, INFINITE, TRUE) == WAIT_IO_COMPLETION)

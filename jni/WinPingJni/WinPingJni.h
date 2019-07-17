@@ -56,15 +56,10 @@ typedef struct {
 	jobject			globalRefobjConsumer;
 } PING_CTX;
 
-
-typedef struct {
-	HANDLE				_hTread;
-	JNIEnv*				ApcThreadJniEnv;
-} PING_ASYNC;
-
 typedef struct {
 	JavaVM*				vm;
 	HANDLE				hIcmpFile;
 	HANDLE				shutdownEvent;
-	PING_ASYNC			async;
+	HANDLE				hTread;
+	JNIEnv*				ApcJniEnv;
 } WIN_PING_GLOBAL;

@@ -32,10 +32,8 @@ JNIEXPORT jint JNICALL Java_at_spindi_WinPing_native_1WinPing_1Startup(JNIEnv *e
 
 	(*env)->GetJavaVM(env, &(gWinPing->vm));
 
-	PING_ASYNC* pAsync = &(gWinPing->async);
-
-	pAsync->_hTread = CreateThread(NULL, 1, (LPTHREAD_START_ROUTINE)ThreadProc, NULL, 0, NULL);
-	if (pAsync->_hTread == NULL) {
+	gWinPing->hTread = CreateThread(NULL, 1, (LPTHREAD_START_ROUTINE)ThreadProc, NULL, 0, NULL);
+	if (gWinPing->hTread == NULL) {
 		goto fail;
 	}
 
