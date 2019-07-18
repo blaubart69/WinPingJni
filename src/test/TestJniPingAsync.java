@@ -88,23 +88,43 @@ public class TestJniPingAsync {
 		System.out.printf("8.8.8.8 roundtrip %d\n", res.result.RoundTripTime);
 	}
 
-	public List<TestResult<WinPingResult>> doAsyncPing(final String[] hostnames) throws UnknownHostException, InterruptedException {
+	@Test
+	public void test2hosts() throws UnknownHostException, InterruptedException {
+		String[] hosts = new String[] {"8.8.8.8", "mail.utanet.at", "1.1.1.1", "test.schrimpe.de", "llkjdfslögjklösdfkg.sdfgsdfg.sdf"};
+		List<WinPingResult> results = doAsyncPing(hosts);
+		Assert.assertEquals(hosts.length, results.size());
+	}
+	public List<WinPingResult> doAsyncPing(final String[] hostnames) throws UnknownHostException, InterruptedException {
 
 		final CountDownLatch numberPings = new CountDownLatch(hostnames.length);
-		final List<TestResult<WinPingResult>> a = new ArrayList<TestResult<WinPingResult>>();
+		final List<WinPingResult> results = new ArrayList<>(hostnames.length);
 		
 		for ( String host : hostnames ) {
+
+			Inet4Address ipv4;
+			try {
+				ipv4 = (Inet4Address) Inet4Address.getByName(host);
+			}
+			catch (Exception ex) {
+				System.out.printf("X: %s - %s\n",host, ex.toString());
+				results.add(new WinPingResult(-1,-1,-1));
+				numberPings.countDown();
+				continue;
+			}
+
+			System.out.println("->" + ipv4.toString());
 			at.spindi.WinPing.ping4Async(
-				(Inet4Address)Inet4Address.getByName(host),
+				ipv4,
 				1000,
-				(result) -> {
+				(winPingResult) -> {
+					System.out.printf("<- %4dms %s\n", winPingResult.RoundTripTime, ipv4.toString());
+					results.add(winPingResult);
 					numberPings.countDown();
-					a.add( new TestResult<WinPingResult>(result));
 				});
 		}
 
 		numberPings.await();
 		
-		return a;
+		return results;
 	}
 }
