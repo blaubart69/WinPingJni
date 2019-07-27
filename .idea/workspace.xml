@@ -2,17 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="ac943968-33ff-4dfb-b724-0e75f71ee8e8" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/jni/WinPingJni/PingAsync.c" beforeDir="false" afterPath="$PROJECT_DIR$/jni/WinPingJni/PingAsync.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/jni/WinPingJni/PingSync.c" beforeDir="false" afterPath="$PROJECT_DIR$/jni/WinPingJni/PingSync.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/jni/WinPingJni/StartupCleanup.c" beforeDir="false" afterPath="$PROJECT_DIR$/jni/WinPingJni/StartupCleanup.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/jni/WinPingJni/WinPingJni.h" beforeDir="false" afterPath="$PROJECT_DIR$/jni/WinPingJni/WinPingJni.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/jni/WinPingJni/WinPingJni.vcxproj" beforeDir="false" afterPath="$PROJECT_DIR$/jni/WinPingJni/WinPingJni.vcxproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/jni/WinPingJni/WinPingJni.vcxproj.filters" beforeDir="false" afterPath="$PROJECT_DIR$/jni/WinPingJni/WinPingJni.vcxproj.filters" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/jni/WinPingJni/at_spindi_WinPing.h" beforeDir="false" afterPath="$PROJECT_DIR$/jni/WinPingJni/at_spindi_WinPing.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/at/spindi/WinPing.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/at/spindi/WinPing.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/at/spindi/WinPingResult.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/at/spindi/WinPingResult.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/JniPingSync.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/JniPingSync.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/jni/WinPingJni/PingSync6.c" beforeDir="false" afterPath="$PROJECT_DIR$/jni/WinPingJni/PingSync6.c" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -154,7 +144,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="JUnit.TestJniPingAsync">
+  <component name="RunManager" selected="JUnit.JniPingSync">
     <configuration name="JniPingSync" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="WinPingJni" />
       <extension name="coverage">
@@ -191,24 +181,6 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="JniPingSync.testOnev6Ping (1)" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="WinPingJni" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="test.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="test" />
-      <option name="MAIN_CLASS_NAME" value="test.JniPingSync" />
-      <option name="METHOD_NAME" value="testOnev6Ping" />
-      <option name="TEST_OBJECT" value="method" />
-      <option name="VM_PARAMETERS" value="-ea  -Djava.library.path=&quot;./jni/x64/Debug&quot;" />
-      <option name="PARAMETERS" value="" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="TestJniPingAsync" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="WinPingJni" />
       <extension name="coverage">
@@ -227,7 +199,7 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="TestJniPingAsync.testAsync8888" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+    <configuration name="TestJniPingAsync.testAsync8888" type="JUnit" factoryName="JUnit" nameIsGenerated="true">
       <module name="WinPingJni" />
       <extension name="coverage">
         <pattern>
@@ -303,19 +275,16 @@
     </configuration>
     <list>
       <item itemvalue="JUnit.test in WinPingJni" />
+      <item itemvalue="JUnit.TestJniPingAsync.testAsync8888" />
       <item itemvalue="JUnit.TestJniPingAsync" />
       <item itemvalue="JUnit.JniPingSync" />
-      <item itemvalue="JUnit.JniPingSync.testOnev6Ping (1)" />
       <item itemvalue="JUnit.JniPingSync.testIPv6Google" />
-      <item itemvalue="JUnit.TestJniPingAsync.testAsync8888" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="JUnit.TestJniPingAsync" />
-        <item itemvalue="JUnit.TestJniPingAsync.testAsync8888" />
         <item itemvalue="JUnit.JniPingSync" />
+        <item itemvalue="JUnit.TestJniPingAsync" />
         <item itemvalue="JUnit.JniPingSync.testIPv6Google" />
-        <item itemvalue="JUnit.JniPingSync.testOnev6Ping (1)" />
       </list>
     </recent_temporary>
   </component>
@@ -338,12 +307,6 @@
     <servers />
   </component>
   <component name="TestHistory">
-    <history-entry file="JniPingSync_testIPv6Google - 2019.07.27 at 23h 42m 24s.xml">
-      <configuration name="JniPingSync.testIPv6Google" configurationId="JUnit" />
-    </history-entry>
-    <history-entry file="JniPingSync_testIPv6Google - 2019.07.27 at 23h 42m 35s.xml">
-      <configuration name="JniPingSync.testIPv6Google" configurationId="JUnit" />
-    </history-entry>
     <history-entry file="JniPingSync - 2019.07.27 at 23h 56m 07s.xml">
       <configuration name="JniPingSync" configurationId="JUnit" />
     </history-entry>
@@ -366,6 +329,12 @@
       <configuration name="TestJniPingAsync.testAsync8888" configurationId="JUnit" />
     </history-entry>
     <history-entry file="TestJniPingAsync - 2019.07.28 at 00h 28m 03s.xml">
+      <configuration name="TestJniPingAsync" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="TestJniPingAsync_testAsync8888 - 2019.07.28 at 00h 30m 46s.xml">
+      <configuration name="TestJniPingAsync.testAsync8888" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="TestJniPingAsync - 2019.07.28 at 00h 30m 54s.xml">
       <configuration name="TestJniPingAsync" configurationId="JUnit" />
     </history-entry>
   </component>

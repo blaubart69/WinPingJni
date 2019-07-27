@@ -13,24 +13,16 @@ extern WIN_PING_GLOBAL* gWinPing;	// global structure initialized via "startup" 
 // -----------------------------------------------------------------------------
 JNIEXPORT jobject JNICALL
 Java_at_spindi_WinPing_native_1icmp_1WinPing6(JNIEnv* env, jclass cl, jbyteArray SourceAddress, jbyteArray DestinationAddress, jint timeoutMs) {
-	// -----------------------------------------------------------------------------
-	jbyte* javaSrcIPv6 = (*env)->GetByteArrayElements(env, SourceAddress, NULL);
-	jbyte* javaDstIPv6 = (*env)->GetByteArrayElements(env, DestinationAddress, NULL);
-
-	jsize lengthSrc = (*env)->GetArrayLength(env, SourceAddress);
-	jsize lengthDst = (*env)->GetArrayLength(env, DestinationAddress);
-
-	MY_DATA			RequestData;		// = { .data = "WinPingJni Send Buffer Data" };
-	MY_ICMPV6_REPLY	ReplyBuffer;	// = { 0 };
+// -----------------------------------------------------------------------------
 
 	struct sockaddr_in6 srcIPv6 = { 0 };
 	struct sockaddr_in6 dstIPv6 = { 0 };
 
-	//srcIPv6.sin6_family = AF_INET6;
-	//dstIPv6.sin6_family = AF_INET6;
+	(*env)->GetByteArrayRegion(env, SourceAddress,      0, 16, (jbyte*)(&srcIPv6.sin6_addr));
+	(*env)->GetByteArrayRegion(env, DestinationAddress, 0, 16, (jbyte*)(&dstIPv6.sin6_addr));
 
-	memcpy(&(srcIPv6.sin6_addr), javaSrcIPv6, 16);
-	memcpy(&(dstIPv6.sin6_addr), javaDstIPv6, 16);
+	MY_DATA			RequestData;	// = { .data = "WinPingJni Send Buffer Data" };
+	MY_ICMPV6_REPLY	ReplyBuffer;	// = { 0 };
 
 	const DWORD ReplysReceived = Icmp6SendEcho2(
 		gWinPing->hIcmp6File
