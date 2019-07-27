@@ -50,6 +50,20 @@ typedef struct {
 
 
 typedef struct {
+#if _WIN64	
+	ICMPV6_ECHO_REPLY			reply[2];
+	IP_OPTION_INFORMATION32		options;	
+#else
+	ICMP_ECHO_REPLY		reply;
+#endif
+	MY_DATA				data;
+	BYTE				extra_data[8];
+	IO_STATUS_BLOCK		io_block;
+} MY_ICMPV6_REPLY;
+
+
+
+typedef struct {
 	IPAddr			ip;
 	DWORD			timeoutMs;
 	MY_ICMP_REPLY	icmpReply;
@@ -57,9 +71,13 @@ typedef struct {
 } PING_CTX;
 
 typedef struct {
-	JavaVM*				vm;
+	//JavaVM*				vm;
 	HANDLE				hIcmpFile;
+	HANDLE				hIcmp6File;
 	HANDLE				shutdownEvent;
 	HANDLE				hTread;
 	JNIEnv*				ApcJniEnv;
 } WIN_PING_GLOBAL;
+
+
+jobject newWinPingResult(JNIEnv* env, jint lastError, jlong status, jint roundtrip);

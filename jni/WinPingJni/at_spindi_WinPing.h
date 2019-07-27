@@ -29,7 +29,7 @@ JNIEXPORT jint JNICALL Java_at_spindi_WinPing_native_1WinPing_1Cleanup
  * Signature: (II)I
  */
 JNIEXPORT jint JNICALL Java_at_spindi_WinPing_native_1icmp_1WinPing4
-  (const JNIEnv *, const jclass, const jint, const jint);
+  (JNIEnv *, jclass, jint, jint);
 
 /*
  * Class:     at_spindi_WinPing
@@ -37,7 +37,15 @@ JNIEXPORT jint JNICALL Java_at_spindi_WinPing_native_1icmp_1WinPing4
  * Signature: (IILjava/util/function/Consumer;)I
  */
 JNIEXPORT jint JNICALL Java_at_spindi_WinPing_native_1icmp_1WinPing4Async
-  (JNIEnv *, const jclass, const jint, const jint, const jobject);
+  (JNIEnv *, jclass, jint, jint, jobject);
+
+/*
+ * Class:     at_spindi_WinPing
+ * Method:    native_icmp_WinPing6
+ * Signature: ([B[BI)Lat/spindi/WinPingResult;
+ */
+JNIEXPORT jobject JNICALL Java_at_spindi_WinPing_native_1icmp_1WinPing6
+  (JNIEnv *, jclass, jbyteArray, jbyteArray, jint);
 
 #ifdef __cplusplus
 }

@@ -1,11 +1,11 @@
 package at.spindi;
 
 public class WinPingResult {
-	public final int LastError;
-	public final int IpStatus;
-	public final int RoundTripTime;
+	public final int  LastError;
+	public final long IpStatus;
+	public final int  RoundTripTime;
 	
-	public WinPingResult(int lastError, int ipStatus, int roundTripTime) {
+	public WinPingResult(int lastError, long ipStatus, int roundTripTime) {
 		super();
 		LastError = lastError;
 		IpStatus = ipStatus;

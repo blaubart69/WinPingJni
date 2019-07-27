@@ -4,22 +4,25 @@
 // global structure initialized via "startup" call
 extern WIN_PING_GLOBAL* gWinPing;
 
-DWORD	WINAPI	ThreadProc(LPVOID lpThreadParameter);
+//DWORD	WINAPI	ThreadProc(LPVOID lpThreadParameter);
 VOID	NTAPI	ApcSendPingAsync(ULONG_PTR Parameter);
 DWORD			enqueue(PING_CTX* pingCtx);
 
 // -----------------------------------------------------------------------------
-void jniPingCompletedCallback(IPAddr ip, DWORD roundtrip, int pingStatus, int LastError, jobject globalRefobjConsumer) {
+void jniPingCompletedCallback(IPAddr ip, DWORD roundtrip, ULONG pingStatus, int LastError, jobject globalRefobjConsumer) {
 // -----------------------------------------------------------------------------
 
 	// the JNIenv of the APC thread ("AttachToCurrentThread")
 	JNIEnv* APCJniEnv = gWinPing->ApcJniEnv;
 	//
 	// create return object
-	//            
+	//
+	/*
 	jclass			WinPingResultClazz	= (*APCJniEnv)->FindClass	(APCJniEnv, "at/spindi/WinPingResult");
-	jmethodID		WinPingResultCtor	= (*APCJniEnv)->GetMethodID	(APCJniEnv, WinPingResultClazz, "<init>", "(III)V");
+	jmethodID		WinPingResultCtor	= (*APCJniEnv)->GetMethodID	(APCJniEnv, WinPingResultClazz, "<init>", "(IJI)V");
 	const jobject   WinPingResultObj	= (*APCJniEnv)->NewObject	(APCJniEnv, WinPingResultClazz, WinPingResultCtor, LastError, pingStatus, roundtrip);
+	*/
+	const jobject   WinPingResultObj = newWinPingResult(APCJniEnv, LastError, pingStatus, roundtrip);
 	//
 	// calling the "consumer" callback
 	//
@@ -41,7 +44,7 @@ void jniPingCompletedCallback(IPAddr ip, DWORD roundtrip, int pingStatus, int La
 */
 // -----------------------------------------------------------------------------
 JNIEXPORT jint JNICALL Java_at_spindi_WinPing_native_1icmp_1WinPing4Async
-(JNIEnv *env, const jclass clazz, const jint bigEndianv4Address, const jint timeoutMs, const jobject objConsumer) {
+(JNIEnv *env, jclass clazz, jint bigEndianv4Address, jint timeoutMs, jobject objConsumer) {
 // -----------------------------------------------------------------------------
 	//
 	// Do something! Do something! (C) by Schurl
@@ -64,35 +67,7 @@ JNIEXPORT jint JNICALL Java_at_spindi_WinPing_native_1icmp_1WinPing4Async
 
 	return rc;
 }
-// -----------------------------------------------------------------------------
-// APC worker functions
-// -----------------------------------------------------------------------------
-DWORD WINAPI ThreadProc(LPVOID lpThreadParameter) {
-// -----------------------------------------------------------------------------
-	JavaVMAttachArgs args;
-	args.version = JNI_VERSION_1_6; // choose your JNI version
-	args.name = "WinPingApcPing"; // you might want to give the java thread a name
-	args.group = NULL; // you might want to assign the java thread to a ThreadGroup
 
-	JNIEnv* jniEnv;
-
-	//(*gWinPing->vm)->AttachCurrentThread(gWinPing->vm, (void**)(&myNewEnv), &args);
-	const jint attachRc =
-		(*gWinPing->vm)->AttachCurrentThread(
-			gWinPing->vm,
-			(void**)(&(gWinPing->ApcJniEnv)),
-			&args);
-
-	while (WaitForSingleObjectEx(gWinPing->shutdownEvent, INFINITE, TRUE) == WAIT_IO_COMPLETION)
-		;
-
-	const jint detachRc = (*gWinPing->vm)->DetachCurrentThread(gWinPing->vm);
-	CloseHandle(gWinPing->shutdownEvent);
-	IcmpCloseHandle(gWinPing->hIcmpFile);
-	HeapFree(GetProcessHeap(), 0, gWinPing);
-
-	return 0;
-}
 // -----------------------------------------------------------------------------
 VOID NTAPI ApcOnPingCompleted(IN PVOID ApcContext, IN PIO_STATUS_BLOCK IoStatusBlock, IN ULONG Reserved) {
 // -----------------------------------------------------------------------------
@@ -100,7 +75,7 @@ VOID NTAPI ApcOnPingCompleted(IN PVOID ApcContext, IN PIO_STATUS_BLOCK IoStatusB
 
 	DWORD replies = IcmpParseReplies(&pingCtx->icmpReply, sizeof(MY_ICMP_REPLY));
 
-	int ipStatus = -1;
+	ULONG ipStatus = -1;
 	DWORD roundtrip = 0;
 	if (replies > 0) {
 		ipStatus = pingCtx->icmpReply.reply.Status;

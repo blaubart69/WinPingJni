@@ -32,5 +32,11 @@
     <ClCompile Include="StartupCleanup.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="PingSync6.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="WinPingResult.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

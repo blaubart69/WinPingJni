@@ -15,8 +15,10 @@
 // global structure initialized via "startup" call
 extern WIN_PING_GLOBAL* gWinPing;
 
+// -----------------------------------------------------------------------------
 JNIEXPORT jint JNICALL 
-Java_at_spindi_WinPing_native_1icmp_1WinPing4 (const JNIEnv *env, const jclass cl, const jint IpAdress, const jint TimeoutMs) {
+Java_at_spindi_WinPing_native_1icmp_1WinPing4 (JNIEnv *env, jclass cl, jint IpAdress, jint TimeoutMs) {
+// -----------------------------------------------------------------------------
 		
 	MY_DATA			SendData;		// = { .data = "WinPingJni Send Buffer Data" };
 	MY_ICMP_REPLY	ReplyBuffer;	// = { 0 };
