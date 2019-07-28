@@ -1,7 +1,10 @@
 # WinPingJni
-pinging with Java on Windows. Only IPv4 right now.
+pinging with Java on Windows. ~~Only IPv4 right now.~~
 
-since there is no Icmp-Ping in Java, we use the native Windows functions via JNI.
-IcmpSendEcho(), ... from the Iphlpapi.dll
+Since there is no Icmp-Ping in Java, we use the native Windows functions via JNI.
+IcmpSendEcho(), IcmpSendEcho2(), Icmp6SendEcho2() from the Iphlpapi.dll.
 
-We try to keep the DLL as small as possible so we do not link against the Visual C runtime.
+Also implement the APC modes of the functions IcmpSendEcho2(), Icmp6SendEcho2(). (tricky!)
+
+2019-07-28 first version of IPv6 syncron ping is available
+
