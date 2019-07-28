@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="ac943968-33ff-4dfb-b724-0e75f71ee8e8" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/jni/WinPingJni/PingSync6.c" beforeDir="false" afterPath="$PROJECT_DIR$/jni/WinPingJni/PingSync6.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/jni/WinPingJni/StartupCleanup.c" beforeDir="false" afterPath="$PROJECT_DIR$/jni/WinPingJni/StartupCleanup.c" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -17,11 +17,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/test/JniPingSync.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="542">
-              <caret line="83" selection-start-line="83" selection-end-line="83" />
+            <state relative-caret-position="198">
+              <caret line="69" selection-start-line="69" selection-end-line="69" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -47,7 +47,7 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/test/TestJniPingAsync.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="198">
@@ -144,7 +144,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="JUnit.JniPingSync">
+  <component name="RunManager" selected="JUnit.test in WinPingJni">
     <configuration name="JniPingSync" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="WinPingJni" />
       <extension name="coverage">
@@ -307,18 +307,6 @@
     <servers />
   </component>
   <component name="TestHistory">
-    <history-entry file="JniPingSync - 2019.07.27 at 23h 56m 07s.xml">
-      <configuration name="JniPingSync" configurationId="JUnit" />
-    </history-entry>
-    <history-entry file="JniPingSync - 2019.07.28 at 00h 15m 53s.xml">
-      <configuration name="JniPingSync" configurationId="JUnit" />
-    </history-entry>
-    <history-entry file="JniPingSync_testIPv6Google - 2019.07.28 at 00h 16m 19s.xml">
-      <configuration name="JniPingSync.testIPv6Google" configurationId="JUnit" />
-    </history-entry>
-    <history-entry file="JniPingSync - 2019.07.28 at 00h 16m 27s.xml">
-      <configuration name="JniPingSync" configurationId="JUnit" />
-    </history-entry>
     <history-entry file="JniPingSync - 2019.07.28 at 00h 25m 12s.xml">
       <configuration name="JniPingSync" configurationId="JUnit" />
     </history-entry>
@@ -336,6 +324,18 @@
     </history-entry>
     <history-entry file="TestJniPingAsync - 2019.07.28 at 00h 30m 54s.xml">
       <configuration name="TestJniPingAsync" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="JniPingSync_(1) - 2019.07.28 at 01h 08m 21s.xml">
+      <configuration name="JniPingSync (1)" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="JniPingSync_(1) - 2019.07.28 at 01h 08m 40s.xml">
+      <configuration name="JniPingSync (1)" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="JniPingSync - 2019.07.28 at 01h 09m 09s.xml">
+      <configuration name="JniPingSync" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="JniPingSync - 2019.07.28 at 01h 10m 47s.xml">
+      <configuration name="JniPingSync" configurationId="JUnit" />
     </history-entry>
   </component>
   <component name="ToolWindowManager">
@@ -477,16 +477,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/test/JniPingSync.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="542">
-          <caret line="83" selection-start-line="83" selection-end-line="83" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/at/spindi/WinPingResult.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="133">
@@ -501,6 +491,16 @@
           <folding>
             <element signature="e#523#524#0" expanded="true" />
             <element signature="e#552#553#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/test/JniPingSync.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="198">
+          <caret line="69" selection-start-line="69" selection-end-line="69" />
+          <folding>
+            <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
