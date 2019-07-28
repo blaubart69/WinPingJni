@@ -71,9 +71,9 @@ typedef struct {
 } PING_CTX;
 
 typedef struct {
-	//JavaVM*				vm;
 	HANDLE				hIcmpFile;
 	HANDLE				hIcmp6File;
+	HANDLE				ApcThreadInitFinished;
 	HANDLE				shutdownEvent;
 	HANDLE				hTread;
 	JNIEnv*				ApcJniEnv;

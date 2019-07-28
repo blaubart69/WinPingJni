@@ -24,19 +24,52 @@ DWORD WINAPI ThreadProc(LPVOID lpThreadParameter) {
 
 	JNIEnv *env = (JNIEnv*)lpThreadParameter;
 
-	JavaVM* vm;
-	(*env)->GetJavaVM(env, &vm);
+	jint jrc;
 
-	const jint attachRc =
-		(*vm)->AttachCurrentThread(
+	JavaVM* vm;
+	jrc = (*env)->GetJavaVM(env, &vm);
+	if (jrc != 0)
+	{
+		WCHAR msg[128];
+		wsprintfW(msg, L"WinPingJni-ApcThread: GetJavaVM() returned: %ld", jrc);
+		OutputDebugStringW(msg);
+	}
+
+	jrc = (*vm)->AttachCurrentThread(
 							vm,
 							(void**)(&(gWinPing->ApcJniEnv)),
 							&args);
 
+	if (jrc != JNI_OK)
+	{
+		WCHAR msg[128];
+		wsprintfW(msg, L"WinPingJni-ApcThread: AttachCurrentThread() returned: %ld", jrc);
+		OutputDebugStringW(msg);
+	}
+
+	// signal that we have attached the thread to the JVM 
+	// and initialized the gWinPing->ApcJniEnv for the call on this thread
+	
+	if (!SetEvent(gWinPing->ApcThreadInitFinished))
+	{
+		WCHAR msg[128]; 
+		wsprintfW(msg, L"WinPingJni-ApcThread: LastError: %d. could not set event WinPingApcInit", GetLastError());
+		OutputDebugStringW(msg);
+		(*vm)->DetachCurrentThread(vm);
+		
+		return 99;
+	}
+
 	while (WaitForSingleObjectEx(gWinPing->shutdownEvent, INFINITE, TRUE) == WAIT_IO_COMPLETION)
 		;
 
-	const jint detachRc = (*vm)->DetachCurrentThread(vm);
+	jrc = (*vm)->DetachCurrentThread(vm);
+	if (jrc != JNI_OK)
+	{
+		WCHAR msg[128];
+		wsprintfW(msg, L"WinPingJni-ApcThread: DetachCurrentThread() returned: %ld", jrc);
+		OutputDebugStringW(msg);
+	}
 
 	return 0;
 }
@@ -54,36 +87,51 @@ JNIEXPORT jint JNICALL Java_at_spindi_WinPing_native_1WinPing_1Startup(JNIEnv *e
 	}
 
 	if ((gWinPing->hIcmpFile = IcmpCreateFile()) == INVALID_HANDLE_VALUE) {
+		rc = GetLastError();
 		goto fail;
 	}
 
 	if ( (gWinPing->hIcmp6File = Icmp6CreateFile()) == INVALID_HANDLE_VALUE) {
+		rc = GetLastError();
 		goto fail;
 	}
 
-	gWinPing->shutdownEvent = CreateEvent(NULL, TRUE, FALSE, L"WinPingApcEndEvent");
-	if (gWinPing->shutdownEvent == NULL)
+	if ((gWinPing->shutdownEvent = CreateEvent(NULL, TRUE, FALSE, L"WinPingApcEnd")) == NULL)
 	{
+		rc = GetLastError();
 		goto fail;
 	}
 
-	gWinPing->hTread = CreateThread(NULL, 1, (LPTHREAD_START_ROUTINE)ThreadProc, env, 0, NULL);
-	if (gWinPing->hTread == NULL) {
+	if ((gWinPing->ApcThreadInitFinished = CreateEvent(NULL, TRUE, FALSE, L"WinPingApcInit")) == NULL)
+	{
+		rc = GetLastError();
+		goto fail;
+	}
+
+	if ((gWinPing->hTread = CreateThread(NULL, 1, (LPTHREAD_START_ROUTINE)ThreadProc, env, 0, NULL)) == NULL)
+	{
+		rc = GetLastError();
+		goto fail;
+	}
+
+	if (WaitForSingleObject(gWinPing->ApcThreadInitFinished, 3000) != WAIT_OBJECT_0)
+	{
+		OutputDebugString(L"WinPing: ApcThread did not initialize within 3s.");
+		rc = 99;
 		goto fail;
 	}
 
 	goto ok;
 
 fail:
-	if (rc == 0) {
-		rc = GetLastError();
-		if (gWinPing != NULL)
-		{
-			if (gWinPing->hIcmpFile  != NULL)		IcmpCloseHandle(gWinPing->hIcmpFile);
-			if (gWinPing->hIcmp6File != NULL)		IcmpCloseHandle(gWinPing->hIcmp6File);
-			if (gWinPing->shutdownEvent != NULL)	CloseHandle(gWinPing->shutdownEvent);
-			HeapFree(GetProcessHeap(), 0, gWinPing);
-		}
+
+	if (gWinPing != NULL)
+	{
+		if (gWinPing->hIcmpFile  != NULL)				IcmpCloseHandle(gWinPing->hIcmpFile);
+		if (gWinPing->hIcmp6File != NULL)				IcmpCloseHandle(gWinPing->hIcmp6File);
+		if (gWinPing->shutdownEvent != NULL)			CloseHandle(gWinPing->shutdownEvent);
+		if (gWinPing->ApcThreadInitFinished != NULL)	CloseHandle(gWinPing->ApcThreadInitFinished);
+		HeapFree(GetProcessHeap(), 0, gWinPing);
 	}
 
 ok:

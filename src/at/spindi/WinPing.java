@@ -36,6 +36,13 @@ public class WinPing {
         		timeoutMs);
 	}
 
+	public static int ping4Async(final Inet4Address v4ToPing, final int timeoutMs, final Consumer<WinPingResult> callback) {
+		return native_icmp_WinPing4Async(
+			IPv4ToNetworkByteOrder(v4ToPing),
+			timeoutMs,
+			callback);
+	}
+
 	public static WinPingResult ping6(final Inet6Address DestinationAddress, int timeoutMs) {
 		return
 			native_icmp_WinPing6(
@@ -49,13 +56,6 @@ public class WinPing {
 			SourceAddress.getAddress(),
 			DestinationAddress.getAddress(),
 			timeoutMs);
-	}
-
-	public static int ping4Async(final Inet4Address v4ToPing, final int timeoutMs, final Consumer<WinPingResult> callback) {
-        return native_icmp_WinPing4Async(
-        		IPv4ToNetworkByteOrder(v4ToPing), 
-        		timeoutMs,
-        		callback);
 	}
 
 	// ---------------------------------------------------------------------------

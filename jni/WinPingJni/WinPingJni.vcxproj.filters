@@ -23,19 +23,19 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="PingSync.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="PingAsync.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="StartupCleanup.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="PingSync6.c">
+    <ClCompile Include="WinPingResult.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="WinPingResult.c">
+    <ClCompile Include="Ping4Async.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Ping4Sync.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Ping6Sync.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

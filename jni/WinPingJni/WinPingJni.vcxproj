@@ -23,9 +23,9 @@
     <ClInclude Include="WinPingJni.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="PingAsync.c" />
-    <ClCompile Include="PingSync.c" />
-    <ClCompile Include="PingSync6.c" />
+    <ClCompile Include="Ping4Async.c" />
+    <ClCompile Include="Ping4Sync.c" />
+    <ClCompile Include="Ping6Sync.c" />
     <ClCompile Include="StartupCleanup.c" />
     <ClCompile Include="WinPingResult.c" />
   </ItemGroup>
