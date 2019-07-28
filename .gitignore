@@ -2,7 +2,7 @@
 bin/**
 
 .settings/**
-
+.idea/**
 *.scc
 *.vssscc
 

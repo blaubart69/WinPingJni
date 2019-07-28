@@ -6,7 +6,7 @@ extern WIN_PING_GLOBAL* gWinPing;
 
 //DWORD	WINAPI	ThreadProc(LPVOID lpThreadParameter);
 VOID	NTAPI	ApcSendPingAsync(ULONG_PTR Parameter);
-DWORD			enqueue(PING_CTX* pingCtx);
+//DWORD			enqueue(PING_CTX* pingCtx);
 
 // -----------------------------------------------------------------------------
 void jniPingCompletedCallback(IPAddr ip, DWORD roundtrip, ULONG pingStatus, int LastError, jobject globalRefobjConsumer) {
@@ -17,11 +17,6 @@ void jniPingCompletedCallback(IPAddr ip, DWORD roundtrip, ULONG pingStatus, int 
 	//
 	// create return object
 	//
-	/*
-	jclass			WinPingResultClazz	= (*APCJniEnv)->FindClass	(APCJniEnv, "at/spindi/WinPingResult");
-	jmethodID		WinPingResultCtor	= (*APCJniEnv)->GetMethodID	(APCJniEnv, WinPingResultClazz, "<init>", "(IJI)V");
-	const jobject   WinPingResultObj	= (*APCJniEnv)->NewObject	(APCJniEnv, WinPingResultClazz, WinPingResultCtor, LastError, pingStatus, roundtrip);
-	*/
 	const jobject   WinPingResultObj = newWinPingResult(APCJniEnv, LastError, pingStatus, roundtrip);
 	//
 	// calling the "consumer" callback
@@ -29,7 +24,7 @@ void jniPingCompletedCallback(IPAddr ip, DWORD roundtrip, ULONG pingStatus, int 
 	const jclass	consumerClass = (*APCJniEnv)->GetObjectClass	(APCJniEnv, globalRefobjConsumer);
 	const jmethodID acceptMethod  = (*APCJniEnv)->GetMethodID		(APCJniEnv, consumerClass, "accept", "(Ljava/lang/Object;)V");
 	//
-	//
+	// call the callback consumer/accept with the WinPingResult object
 	//
 	(*APCJniEnv)->CallVoidMethod(APCJniEnv, globalRefobjConsumer, acceptMethod, WinPingResultObj);
 	//

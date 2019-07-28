@@ -274,11 +274,11 @@
       </method>
     </configuration>
     <list>
-      <item itemvalue="JUnit.test in WinPingJni" />
-      <item itemvalue="JUnit.TestJniPingAsync.testAsync8888" />
-      <item itemvalue="JUnit.TestJniPingAsync" />
       <item itemvalue="JUnit.JniPingSync" />
       <item itemvalue="JUnit.JniPingSync.testIPv6Google" />
+      <item itemvalue="JUnit.TestJniPingAsync" />
+      <item itemvalue="JUnit.TestJniPingAsync.testAsync8888" />
+      <item itemvalue="JUnit.test in WinPingJni" />
     </list>
     <recent_temporary>
       <list>

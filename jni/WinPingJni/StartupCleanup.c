@@ -38,7 +38,6 @@ DWORD WINAPI ThreadProc(LPVOID lpThreadParameter) {
 
 	const jint detachRc = (*vm)->DetachCurrentThread(vm);
 
-
 	return 0;
 }
 
@@ -54,12 +53,17 @@ JNIEXPORT jint JNICALL Java_at_spindi_WinPing_native_1WinPing_1Startup(JNIEnv *e
 		goto fail;
 	}
 
-	gWinPing->hIcmpFile = IcmpCreateFile();
-	if (gWinPing->hIcmpFile == INVALID_HANDLE_VALUE) {
+	if ((gWinPing->hIcmpFile = IcmpCreateFile()) == INVALID_HANDLE_VALUE) {
 		goto fail;
 	}
 
 	if ( (gWinPing->hIcmp6File = Icmp6CreateFile()) == INVALID_HANDLE_VALUE) {
+		goto fail;
+	}
+
+	gWinPing->shutdownEvent = CreateEvent(NULL, TRUE, FALSE, L"WinPingApcEndEvent");
+	if (gWinPing->shutdownEvent == NULL)
+	{
 		goto fail;
 	}
 
@@ -68,23 +72,18 @@ JNIEXPORT jint JNICALL Java_at_spindi_WinPing_native_1WinPing_1Startup(JNIEnv *e
 		goto fail;
 	}
 
-	/*
-	if (QueueUserAPC(ApcAttachThreadToJavaVM, pAsync->_hTread, (ULONG_PTR)NULL) == 0) {
-		goto fail;
-	}
-	*/
-
-	gWinPing->shutdownEvent = CreateEvent(NULL, TRUE, FALSE, L"WinPingApcEndEvent");
-	if (gWinPing->shutdownEvent == NULL)
-	{
-		goto fail;
-	}
-
 	goto ok;
 
 fail:
 	if (rc == 0) {
 		rc = GetLastError();
+		if (gWinPing != NULL)
+		{
+			if (gWinPing->hIcmpFile  != NULL)		IcmpCloseHandle(gWinPing->hIcmpFile);
+			if (gWinPing->hIcmp6File != NULL)		IcmpCloseHandle(gWinPing->hIcmp6File);
+			if (gWinPing->shutdownEvent != NULL)	CloseHandle(gWinPing->shutdownEvent);
+			HeapFree(GetProcessHeap(), 0, gWinPing);
+		}
 	}
 
 ok:
