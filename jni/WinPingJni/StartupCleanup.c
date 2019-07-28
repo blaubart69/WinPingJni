@@ -108,7 +108,7 @@ JNIEXPORT jint JNICALL Java_at_spindi_WinPing_native_1WinPing_1Startup(JNIEnv *e
 		goto fail;
 	}
 
-	if ((gWinPing->hTread = CreateThread(NULL, 1, (LPTHREAD_START_ROUTINE)ThreadProc, env, 0, NULL)) == NULL)
+	if ((gWinPing->hTread = CreateThread(NULL, 1, (LPTHREAD_START_ROUTINE)ThreadProc, (LPVOID)env, 0, NULL)) == NULL)
 	{
 		rc = GetLastError();
 		goto fail;

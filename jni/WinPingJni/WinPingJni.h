@@ -54,7 +54,7 @@ typedef struct {
 	ICMPV6_ECHO_REPLY			reply[2];
 	IP_OPTION_INFORMATION32		options;	
 #else
-	ICMP_ECHO_REPLY		reply;
+	ICMPV6_ECHO_REPLY		reply[2];
 #endif
 	MY_DATA				data;
 	BYTE				extra_data[8];
