@@ -9,7 +9,7 @@ VOID	NTAPI	ApcSendPingAsync(ULONG_PTR Parameter);
 //DWORD			enqueue(PING_CTX* pingCtx);
 
 // -----------------------------------------------------------------------------
-void jniPingCompletedCallback(IPAddr ip, DWORD roundtrip, ULONG pingStatus, int LastError, jobject globalRefobjConsumer) {
+void jniPingCompletedCallback(IPAddr ip, int LastError, jlong pingStatus, jint roundtrip, jobject globalRefobjConsumer) {
 // -----------------------------------------------------------------------------
 
 	// the JNIenv of the APC thread ("AttachToCurrentThread")
@@ -70,14 +70,14 @@ VOID NTAPI ApcOnPingCompleted(IN PVOID ApcContext, IN PIO_STATUS_BLOCK IoStatusB
 
 	DWORD replies = IcmpParseReplies(&pingCtx->icmpReply, sizeof(MY_ICMP_REPLY));
 
-	ULONG ipStatus = -1;
-	DWORD roundtrip = 0;
 	if (replies > 0) {
-		ipStatus = pingCtx->icmpReply.reply.Status;
-		roundtrip = pingCtx->icmpReply.reply.RoundTripTime;
+		jniPingCompletedCallback(pingCtx->ip, 0, (jlong)(pingCtx->icmpReply.reply.Status), (jint)(pingCtx->icmpReply.reply.RoundTripTime), pingCtx->globalRefobjConsumer);
 	}
-
-	jniPingCompletedCallback(pingCtx->ip, roundtrip, ipStatus, 0, pingCtx->globalRefobjConsumer);
+	else {
+		// The IcmpParseReplies function returns the number of ICMP responses found on success. The function returns zero on error. 
+		// Call GetLastError for additional error information.
+		jniPingCompletedCallback(pingCtx->ip, 0, (jlong)GetLastError(), (jint)-1, pingCtx->globalRefobjConsumer);
+	}
 
 	HeapFree(GetProcessHeap(), 0, pingCtx);
 }
@@ -124,7 +124,7 @@ VOID NTAPI ApcSendPingAsync(ULONG_PTR Parameter) {
 			// some error occured. APC will not be called.
 			// clean up here
 			//
-			jniPingCompletedCallback(pingCtx->ip, 0, -1, send2LastError, pingCtx->globalRefobjConsumer);
+			jniPingCompletedCallback(pingCtx->ip, send2LastError, -1, 0, pingCtx->globalRefobjConsumer);
 			HeapFree(GetProcessHeap(), 0, pingCtx);
 		}
 	}

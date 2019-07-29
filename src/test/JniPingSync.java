@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 
 import java.net.Inet4Address;
 import java.net.Inet6Address;
+import java.net.InetAddress;
 import java.net.UnknownHostException;
 
 import at.spindi.WinPing;
@@ -68,5 +69,11 @@ public class JniPingSync {
 
 		WinPingResult res = WinPing.ping(Inet6Address.getByName("ipv6.google.com"),1000);
 		Assert.assertEquals(0, res.LastError);
+	}
+	@Test
+	public void testIcmpTimeout() throws UnknownHostException {
+		WinPingResult res = WinPing.ping(InetAddress.getByName("192.168.17.17"),1000);
+		Assert.assertEquals(0, res.LastError);
+		Assert.assertEquals(11010, res.IpStatus);
 	}
 }

@@ -41,10 +41,26 @@ Java_at_spindi_WinPing_native_1icmp_1WinPing4 (JNIEnv *env, jclass cl, jint IpAd
 		DWORD ErrSize = sizeof(IpErrorMsg);
 		GetIpErrorString(ReplyBuffer.reply.Status, IpErrorMsg, &ErrSize);
 #endif
-		result = newWinPingResult(env, GetLastError(), -1, -1);
+		DWORD LastError = GetLastError();
+
+		if (LastError == 0) {
+			// should not be possible
+			// >>> If the return value is zero, call GetLastError for additional error information. <<<
+			result = newWinPingResult(env, LastError, (jlong)-1, (jint)-1);
+		}
+		else {
+			jlong ipstatus = -1;
+			if (LastError >= 11001 && LastError <= 11050)
+			{
+				ipstatus = (jlong)LastError;
+				LastError = 0;
+			}
+
+			result = newWinPingResult(env, LastError, ipstatus, (jint)-1);
+		}
 	}
 	else {
-		result = newWinPingResult(env, 0, ReplyBuffer.reply.Status, ReplyBuffer.reply.RoundTripTime);
+		result = newWinPingResult(env, 0, (jlong)ReplyBuffer.reply.Status, (jint)ReplyBuffer.reply.RoundTripTime);
 	}
 
 	return result;

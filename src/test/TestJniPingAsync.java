@@ -5,6 +5,7 @@ import static org.junit.Assert.*;
 import java.net.Inet4Address;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -89,15 +90,27 @@ public class TestJniPingAsync {
 	}
 
 	@Test
-	public void test2hosts() throws UnknownHostException, InterruptedException {
-		String[] hosts = new String[] {"8.8.8.8", "mail.utanet.at", "1.1.1.1", "test.schrimpe.de", "llkjdfslögjklösdfkg.sdfgsdfg.sdf"};
+	public void test5hosts() throws UnknownHostException, InterruptedException {
+		List<String> hosts = Arrays.asList("8.8.8.8", "mail.utanet.at", "1.1.1.1", "test.schrimpe.de", "llkjdfslögjklösdfkg.sdfgsdfg.sdf");
 		List<WinPingResult> results = doAsyncPing(hosts);
-		Assert.assertEquals(hosts.length, results.size());
+		Assert.assertEquals(hosts.size(), results.size());
 	}
-	public List<WinPingResult> doAsyncPing(final String[] hostnames) throws UnknownHostException, InterruptedException {
+	@Test
+	public void pingSubnet() throws InterruptedException, UnknownHostException {
 
-		final CountDownLatch numberPings = new CountDownLatch(hostnames.length);
-		final List<WinPingResult> results = new ArrayList<>(hostnames.length);
+		List<String> hosts = new ArrayList<>(254);
+
+		for (int i=1; i<255;++i) {
+			hosts.add("192.168.0." + i);
+		}
+
+		List<WinPingResult> results = doAsyncPing(hosts);
+		Assert.assertEquals(hosts.size(), results.size());
+	}
+	public List<WinPingResult> doAsyncPing(final List<String> hostnames) throws UnknownHostException, InterruptedException {
+
+		final CountDownLatch numberPings = new CountDownLatch(hostnames.size());
+		final List<WinPingResult> results = new ArrayList<>(hostnames.size());
 		
 		for ( String host : hostnames ) {
 
@@ -112,12 +125,17 @@ public class TestJniPingAsync {
 				continue;
 			}
 
-			System.out.println("->" + ipv4.toString());
+			//System.out.println("->" + ipv4.toString());
 			at.spindi.WinPing.ping4Async(
 				ipv4,
 				1000,
 				(winPingResult) -> {
-					System.out.printf("<- %4dms %s\n", winPingResult.RoundTripTime, ipv4.toString());
+					System.out.printf("<- LastErr: %5d, status: %5d, %4dms %s\n",
+						winPingResult.LastError,
+						winPingResult.IpStatus,
+						winPingResult.RoundTripTime,
+						ipv4.toString());
+
 					results.add(winPingResult);
 					numberPings.countDown();
 				});
