@@ -68,7 +68,7 @@ typedef struct {
 	DWORD			timeoutMs;
 	MY_ICMP_REPLY	icmpReply;
 	jobject			globalRefobjConsumer;
-} PING_CTX;
+} PING4_CTX;
 
 typedef struct {
 	HANDLE				hIcmpFile;

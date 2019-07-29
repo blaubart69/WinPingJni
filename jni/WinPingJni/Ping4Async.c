@@ -44,7 +44,7 @@ JNIEXPORT jint JNICALL Java_at_spindi_WinPing_native_1icmp_1WinPing4Async
 	//
 	// Do something! Do something! (C) by Schurl
 	//
-	PING_CTX *pingCtx = (PING_CTX*)HeapAlloc(GetProcessHeap(), 0, sizeof(PING_CTX));
+	PING4_CTX *pingCtx = (PING4_CTX*)HeapAlloc(GetProcessHeap(), 0, sizeof(PING4_CTX));
 	if (pingCtx == NULL) {
 		return ERROR_OUTOFMEMORY;
 	}
@@ -66,17 +66,27 @@ JNIEXPORT jint JNICALL Java_at_spindi_WinPing_native_1icmp_1WinPing4Async
 // -----------------------------------------------------------------------------
 VOID NTAPI ApcOnPingCompleted(IN PVOID ApcContext, IN PIO_STATUS_BLOCK IoStatusBlock, IN ULONG Reserved) {
 // -----------------------------------------------------------------------------
-	PING_CTX* pingCtx = (PING_CTX*)ApcContext;
+	PING4_CTX* pingCtx = (PING4_CTX*)ApcContext;
 
 	DWORD replies = IcmpParseReplies(&pingCtx->icmpReply, sizeof(MY_ICMP_REPLY));
 
 	if (replies > 0) {
-		jniPingCompletedCallback(pingCtx->ip, 0, (jlong)(pingCtx->icmpReply.reply.Status), (jint)(pingCtx->icmpReply.reply.RoundTripTime), pingCtx->globalRefobjConsumer);
+		jniPingCompletedCallback(
+			pingCtx->ip
+			, 0
+			, (jlong)(pingCtx->icmpReply.reply.Status)
+			, (jint)(pingCtx->icmpReply.reply.RoundTripTime)
+			, pingCtx->globalRefobjConsumer);
 	}
 	else {
 		// The IcmpParseReplies function returns the number of ICMP responses found on success. The function returns zero on error. 
 		// Call GetLastError for additional error information.
-		jniPingCompletedCallback(pingCtx->ip, 0, (jlong)GetLastError(), (jint)-1, pingCtx->globalRefobjConsumer);
+		jniPingCompletedCallback(
+			pingCtx->ip
+			, 0
+			, (jlong)GetLastError()
+			, (jint)-1
+			, pingCtx->globalRefobjConsumer);
 	}
 
 	HeapFree(GetProcessHeap(), 0, pingCtx);
@@ -84,7 +94,7 @@ VOID NTAPI ApcOnPingCompleted(IN PVOID ApcContext, IN PIO_STATUS_BLOCK IoStatusB
 // -----------------------------------------------------------------------------
 VOID NTAPI ApcSendPingAsync(ULONG_PTR Parameter) {
 // -----------------------------------------------------------------------------
-	PING_CTX* pingCtx = (PING_CTX*)Parameter;
+	PING4_CTX* pingCtx = (PING4_CTX*)Parameter;
 	//
 	// we are now within the "ping thread"
 	// let's send an async ping...
