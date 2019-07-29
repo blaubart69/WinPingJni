@@ -38,23 +38,15 @@ Java_at_spindi_WinPing_native_1icmp_1WinPing6(JNIEnv* env, jclass cl, jbyteArray
 		, sizeof(ReplyBuffer)
 		, timeoutMs);
 
-	jint LastError;
-	jlong pingStatus;
-	jint roundtrip;
+	jobject    WinPingResultObj;
 
 	if (ReplysReceived == 0) {
-		LastError = GetLastError();
-		pingStatus = -1;
-		roundtrip = -1;
+		WinPingResultObj = newWinPingResult(env, GetLastError(), -1, -1);
 	}
 	else
 	{
-		LastError = 0;
-		pingStatus = ReplyBuffer.reply->Status;
-		roundtrip = ReplyBuffer.reply->RoundTripTime;
+		WinPingResultObj = newWinPingResult(env, GetLastError(), ReplyBuffer.reply->Status, ReplyBuffer.reply->RoundTripTime);
 	}
-
-	jobject    WinPingResultObj = newWinPingResult(env, LastError, pingStatus, roundtrip);
 
 	return WinPingResultObj;
 }

@@ -45,6 +45,7 @@ DWORD WINAPI ThreadProc(LPVOID lpThreadParameter) {
 		WCHAR msg[128];
 		wsprintfW(msg, L"WinPingJni-ApcThread: AttachCurrentThread() returned: %ld", jrc);
 		OutputDebugStringW(msg);
+		return jrc;
 	}
 
 	// signal that we have attached the thread to the JVM 
@@ -53,15 +54,14 @@ DWORD WINAPI ThreadProc(LPVOID lpThreadParameter) {
 	if (!SetEvent(gWinPing->ApcThreadInitFinished))
 	{
 		WCHAR msg[128]; 
-		wsprintfW(msg, L"WinPingJni-ApcThread: LastError: %d. could not set event WinPingApcInit", GetLastError());
+		wsprintfW(msg, L"WinPingJni-ApcThread: LastError: %d. could not set event WinPingApcInit", (jrc=GetLastError()));
 		OutputDebugStringW(msg);
-		(*vm)->DetachCurrentThread(vm);
-		
-		return 99;
 	}
-
-	while (WaitForSingleObjectEx(gWinPing->shutdownEvent, INFINITE, TRUE) == WAIT_IO_COMPLETION)
-		;
+	else
+	{
+		while (WaitForSingleObjectEx(gWinPing->shutdownEvent, INFINITE, TRUE) == WAIT_IO_COMPLETION)
+			;
+	}
 
 	jrc = (*vm)->DetachCurrentThread(vm);
 	if (jrc != JNI_OK)
@@ -71,7 +71,7 @@ DWORD WINAPI ThreadProc(LPVOID lpThreadParameter) {
 		OutputDebugStringW(msg);
 	}
 
-	return 0;
+	return jrc;
 }
 
 // -----------------------------------------------------------------------------
@@ -120,6 +120,10 @@ JNIEXPORT jint JNICALL Java_at_spindi_WinPing_native_1WinPing_1Startup(JNIEnv *e
 		rc = 99;
 		goto fail;
 	}
+	else {
+		CloseHandle(gWinPing->ApcThreadInitFinished);
+		gWinPing->ApcThreadInitFinished = NULL;
+	}
 
 	goto ok;
 
@@ -140,7 +144,7 @@ ok:
 }
 
 // -----------------------------------------------------------------------------
-JNIEXPORT jint JNICALL Java_at_spindi_WinPing_native_1WinPing_1Cleanup(JNIEnv *env, jclass clazz) {
+JNIEXPORT jint JNICALL Java_at_spindi_WinPing_native_1WinPing_1Shutdown(JNIEnv *env, jclass clazz) {
 // -----------------------------------------------------------------------------
 	DWORD rc = 0;
 

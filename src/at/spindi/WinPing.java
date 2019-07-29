@@ -2,6 +2,7 @@ package at.spindi;
 
 import java.net.Inet4Address;
 import java.net.Inet6Address;
+import java.net.InetAddress;
 import java.util.function.Consumer;
 
 public class WinPing {
@@ -12,10 +13,10 @@ public class WinPing {
 	}
 	
 	private static native int native_WinPing_Startup();
-	private static native int native_WinPing_Cleanup();
+	private static native int native_WinPing_Shutdown();
 
-	private static native int native_icmp_WinPing4     (final int IpAdress, final int timeout);
-	private static native int native_icmp_WinPing4Async(final int IpAdress, final int timeout, final Consumer<WinPingResult> callback);
+	private static native WinPingResult native_icmp_WinPing4     (final int IpAdress, final int timeout);
+	private static native int 			native_icmp_WinPing4Async(final int IpAdress, final int timeout, final Consumer<WinPingResult> callback);
 
 	private static native WinPingResult native_icmp_WinPing6     (final byte[] SourceAddress, final byte[] DestinationAddress, final int timeout);
 
@@ -26,29 +27,30 @@ public class WinPing {
 	public static int Startup() {
 		return native_WinPing_Startup();
 	}
-	public static int Cleanup() {
-		return native_WinPing_Cleanup();
-	}
-	
-	public static int ping4(final Inet4Address v4ToPing, final int timeoutMs) {
-        return native_icmp_WinPing4(
-        		IPv4ToNetworkByteOrder(v4ToPing), 
-        		timeoutMs);
+	public static int Shutdown() {
+		return native_WinPing_Shutdown();
 	}
 
-	public static int ping4Async(final Inet4Address v4ToPing, final int timeoutMs, final Consumer<WinPingResult> callback) {
-		return native_icmp_WinPing4Async(
-			IPv4ToNetworkByteOrder(v4ToPing),
-			timeoutMs,
-			callback);
-	}
+	public static WinPingResult ping(final InetAddress ip, final int timeoutMs) throws UnsupportedOperationException {
 
-	public static WinPingResult ping6(final Inet6Address DestinationAddress, int timeoutMs) {
-		return
-			native_icmp_WinPing6(
-				IPv6ZERO,
-				DestinationAddress.getAddress(),
+		WinPingResult result;
+
+		if ( ip instanceof Inet4Address ) {
+			result = native_icmp_WinPing4(
+				IPv4ToNetworkByteOrder( (Inet4Address)ip ),
 				timeoutMs);
+		}
+		else if ( ip instanceof Inet6Address ) {
+			result = native_icmp_WinPing6(
+				IPv6ZERO,
+				ip.getAddress(),
+				timeoutMs);
+		}
+		else {
+			throw new UnsupportedOperationException("only IPv4 and IPv6 addresses are supported");
+		}
+
+		return result;
 	}
 
 	public static WinPingResult ping6(final Inet6Address SourceAddress, final Inet6Address DestinationAddress, int timeoutMs) {
@@ -56,6 +58,13 @@ public class WinPing {
 			SourceAddress.getAddress(),
 			DestinationAddress.getAddress(),
 			timeoutMs);
+	}
+
+	public static int ping4Async(final Inet4Address v4ToPing, final int timeoutMs, final Consumer<WinPingResult> callback) {
+		return native_icmp_WinPing4Async(
+			IPv4ToNetworkByteOrder(v4ToPing),
+			timeoutMs,
+			callback);
 	}
 
 	// ---------------------------------------------------------------------------

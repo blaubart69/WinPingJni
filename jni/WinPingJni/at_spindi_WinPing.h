@@ -17,18 +17,18 @@ JNIEXPORT jint JNICALL Java_at_spindi_WinPing_native_1WinPing_1Startup
 
 /*
  * Class:     at_spindi_WinPing
- * Method:    native_WinPing_Cleanup
+ * Method:    native_WinPing_Shutdown
  * Signature: ()I
  */
-JNIEXPORT jint JNICALL Java_at_spindi_WinPing_native_1WinPing_1Cleanup
+JNIEXPORT jint JNICALL Java_at_spindi_WinPing_native_1WinPing_1Shutdown
   (JNIEnv *, jclass);
 
 /*
  * Class:     at_spindi_WinPing
  * Method:    native_icmp_WinPing4
- * Signature: (II)I
+ * Signature: (II)Lat/spindi/WinPingResult;
  */
-JNIEXPORT jint JNICALL Java_at_spindi_WinPing_native_1icmp_1WinPing4
+JNIEXPORT jobject JNICALL Java_at_spindi_WinPing_native_1icmp_1WinPing4
   (JNIEnv *, jclass, jint, jint);
 
 /*

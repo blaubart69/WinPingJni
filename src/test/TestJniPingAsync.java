@@ -32,7 +32,7 @@ public class TestJniPingAsync {
 	@AfterClass
 	public static void afterClass() {
 		System.out.println("cleaning up");
-		Assert.assertEquals(0, at.spindi.WinPing.Cleanup());
+		Assert.assertEquals(0, at.spindi.WinPing.Shutdown());
 	}
 	@Test
 	public void testAsyncLocalhost() throws UnknownHostException, InterruptedException {

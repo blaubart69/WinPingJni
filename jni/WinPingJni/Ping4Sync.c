@@ -16,7 +16,7 @@
 extern WIN_PING_GLOBAL* gWinPing;
 
 // -----------------------------------------------------------------------------
-JNIEXPORT jint JNICALL 
+JNIEXPORT jobject JNICALL 
 Java_at_spindi_WinPing_native_1icmp_1WinPing4 (JNIEnv *env, jclass cl, jint IpAdress, jint TimeoutMs) {
 // -----------------------------------------------------------------------------
 		
@@ -33,17 +33,19 @@ Java_at_spindi_WinPing_native_1icmp_1WinPing4 (JNIEnv *env, jclass cl, jint IpAd
 		sizeof(ReplyBuffer),
 		TimeoutMs);
 
+	jobject result;
+
 	if (ReplysReceived == 0) {
 #ifdef _DEBUG
 		WCHAR IpErrorMsg[1024];
 		DWORD ErrSize = sizeof(IpErrorMsg);
 		GetIpErrorString(ReplyBuffer.reply.Status, IpErrorMsg, &ErrSize);
 #endif
-		DWORD replyLastError = GetLastError();
-		return replyLastError;
+		result = newWinPingResult(env, GetLastError(), -1, -1);
+	}
+	else {
+		result = newWinPingResult(env, 0, ReplyBuffer.reply.Status, ReplyBuffer.reply.RoundTripTime);
 	}
 
-	const ULONG IpStatus = ReplyBuffer.reply.Status;
-
-	return IpStatus;
+	return result;
 }
