@@ -155,6 +155,7 @@ JNIEXPORT jint JNICALL Java_at_spindi_WinPing_native_1WinPing_1Shutdown(JNIEnv *
 	IcmpCloseHandle(gWinPing->hIcmpFile);
 	IcmpCloseHandle(gWinPing->hIcmp6File);
 	CloseHandle(gWinPing->shutdownEvent);
+	CloseHandle(gWinPing->hTread);
 	HeapFree(GetProcessHeap(), 0, gWinPing);
 
 	return rc;
