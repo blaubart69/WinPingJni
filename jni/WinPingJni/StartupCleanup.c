@@ -30,9 +30,7 @@ DWORD WINAPI ThreadProc(LPVOID lpThreadParameter) {
 	jrc = (*env)->GetJavaVM(env, &vm);
 	if (jrc != 0)
 	{
-		WCHAR msg[128];
-		wsprintfW(msg, L"WinPingJni-ApcThread: GetJavaVM() returned: %ld", jrc);
-		OutputDebugStringW(msg);
+		logError(L"WinPingJni-ApcThread", L"GetJavaVM", jrc);
 	}
 
 	jrc = (*vm)->AttachCurrentThread(
@@ -42,9 +40,7 @@ DWORD WINAPI ThreadProc(LPVOID lpThreadParameter) {
 
 	if (jrc != JNI_OK)
 	{
-		WCHAR msg[128];
-		wsprintfW(msg, L"WinPingJni-ApcThread: AttachCurrentThread() returned: %ld", jrc);
-		OutputDebugStringW(msg);
+		logError(L"WinPingJni-ApcThread", L"AttachCurrentThread", jrc);
 		return jrc;
 	}
 
@@ -53,9 +49,7 @@ DWORD WINAPI ThreadProc(LPVOID lpThreadParameter) {
 	
 	if (!SetEvent(gWinPing->ApcThreadInitFinished))
 	{
-		WCHAR msg[128]; 
-		wsprintfW(msg, L"WinPingJni-ApcThread: LastError: %d. could not set event WinPingApcInit", (jrc=GetLastError()));
-		OutputDebugStringW(msg);
+		jrc = logLastWin32Error(L"WinPingJni-ApcThread", L"SetEvent", L"ApcThreadInitFinished");
 	}
 	else
 	{
@@ -66,9 +60,7 @@ DWORD WINAPI ThreadProc(LPVOID lpThreadParameter) {
 	jrc = (*vm)->DetachCurrentThread(vm);
 	if (jrc != JNI_OK)
 	{
-		WCHAR msg[128];
-		wsprintfW(msg, L"WinPingJni-ApcThread: DetachCurrentThread() returned: %ld", jrc);
-		OutputDebugStringW(msg);
+		logError(L"WinPingJni-ApcThread", L"DetachCurrentThread", jrc);
 	}
 
 	return jrc;
@@ -83,41 +75,41 @@ JNIEXPORT jint JNICALL Java_at_spindi_WinPing_native_1WinPing_1Startup(JNIEnv *e
 	gWinPing = (WIN_PING_GLOBAL*)HeapAlloc(GetProcessHeap(), HEAP_ZERO_MEMORY, sizeof(WIN_PING_GLOBAL));
 	if (gWinPing == NULL) {
 		rc = ERROR_OUTOFMEMORY;
+		logError(L"WinPing.Startup", L"HeapAlloc", rc);
 		goto fail;
 	}
 
 	if ((gWinPing->hIcmpFile = IcmpCreateFile()) == INVALID_HANDLE_VALUE) {
-		rc = GetLastError();
+		rc = logLastWin32Error(L"WinPing.Startup", L"IcmpCreateFile", L"invalid handle");
 		goto fail;
 	}
 
 	if ( (gWinPing->hIcmp6File = Icmp6CreateFile()) == INVALID_HANDLE_VALUE) {
-		rc = GetLastError();
+		rc = logLastWin32Error(L"WinPing.Startup", L"Icmp6CreateFile", L"invalid handle");
 		goto fail;
 	}
 
 	if ((gWinPing->shutdownEvent = CreateEvent(NULL, TRUE, FALSE, L"WinPingApcEnd")) == NULL)
 	{
-		rc = GetLastError();
+		rc = logLastWin32Error(L"WinPing.Startup", L"CreateEvent", L"shutdownEvent");
 		goto fail;
 	}
 
 	if ((gWinPing->ApcThreadInitFinished = CreateEvent(NULL, TRUE, FALSE, L"WinPingApcInit")) == NULL)
 	{
-		rc = GetLastError();
+		rc = logLastWin32Error(L"WinPing.Startup", L"CreateEvent", L"ApcThreadInitFinished");
 		goto fail;
 	}
 
 	if ((gWinPing->hTread = CreateThread(NULL, 1, (LPTHREAD_START_ROUTINE)ThreadProc, (LPVOID)env, 0, NULL)) == NULL)
 	{
-		rc = GetLastError();
+		rc = logLastWin32Error(L"WinPing.Startup", L"CreateThread", L"ThreadProc");
 		goto fail;
 	}
 
-	if (WaitForSingleObject(gWinPing->ApcThreadInitFinished, 3000) != WAIT_OBJECT_0)
+	if ((rc=WaitForSingleObject(gWinPing->ApcThreadInitFinished, 3000)) != WAIT_OBJECT_0)
 	{
-		OutputDebugString(L"WinPing: ApcThread did not initialize within 3s.");
-		rc = 99;
+		logError(L"WinPing.Startup", L"ApcThread did not initialize within 3s.", rc);
 		goto fail;
 	}
 	else {
@@ -167,4 +159,24 @@ DllMain(IN HINSTANCE hDllHandle, IN DWORD nReason, IN LPVOID Reserved)
 {
 	BOOLEAN bSuccess = TRUE;
 	return bSuccess;
+}
+// -----------------------------------------------------------------------------
+void logError(LPCWSTR method, LPCWSTR text, DWORD rc)
+// -----------------------------------------------------------------------------
+{
+	WCHAR msg[256];
+	wsprintfW(msg, L"%s: rc(%ld) %s", method, rc, text);
+	OutputDebugString(msg);
+}
+// -----------------------------------------------------------------------------
+DWORD logLastWin32Error(LPCWSTR method, LPCWSTR win32Api, LPCWSTR text)
+// -----------------------------------------------------------------------------
+{
+	WCHAR msg[256];
+	DWORD lastrc = GetLastError();
+
+	wsprintfW(msg, L"%s: LastError(%ld) Win32API(%s) %s", method, lastrc, win32Api, text);
+	OutputDebugString(msg);
+
+	return lastrc;
 }

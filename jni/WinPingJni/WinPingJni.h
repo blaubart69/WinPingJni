@@ -81,3 +81,5 @@ typedef struct {
 
 
 jobject newWinPingResult(JNIEnv* env, jint lastError, jlong status, jint roundtrip);
+void logError(LPCWSTR method, LPCWSTR text, DWORD rc);
+DWORD logLastWin32Error(LPCWSTR method, LPCWSTR win32Api, LPCWSTR text);
