@@ -1,0 +1,1 @@
+java -cp out\production\WinPingJni -Djava.library.path=jni\x64\Debug at.spindi.RunPing
