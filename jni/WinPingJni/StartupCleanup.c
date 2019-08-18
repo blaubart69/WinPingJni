@@ -53,8 +53,24 @@ DWORD WINAPI ThreadProc(LPVOID lpThreadParameter) {
 	}
 	else
 	{
-		while (WaitForSingleObjectEx(gWinPing->shutdownEvent, INFINITE, TRUE) == WAIT_IO_COMPLETION)
+		DWORD rc;
+		while ((rc=WaitForSingleObjectEx(gWinPing->shutdownEvent, INFINITE, TRUE)) == WAIT_IO_COMPLETION)
 			;
+
+		if (rc == WAIT_OBJECT_0)
+		{
+			// shutdown was signaled. everything ok.
+		}
+		else if (rc == WAIT_FAILED)
+		{
+			jrc = logLastWin32Error(L"ApcThread", L"WaitForSingleObjectEx(WAIT_FAILED)", L"shutdownEvent");
+		}
+		else 
+		{
+			jrc = rc;
+			logError(L"ApcThread", L"WaitForSingleObjectEx", rc);
+		}
+
 	}
 
 	jrc = (*vm)->DetachCurrentThread(vm);

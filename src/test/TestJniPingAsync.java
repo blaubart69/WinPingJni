@@ -101,7 +101,7 @@ public class TestJniPingAsync {
 		List<String> hosts = new ArrayList<>(254);
 
 		for (int i=1; i<255;++i) {
-			hosts.add("192.168.0." + i);
+			hosts.add("192.168.178." + i);
 		}
 
 		List<WinPingResult> results = doAsyncPing(hosts);
