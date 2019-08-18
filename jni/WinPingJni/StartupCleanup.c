@@ -157,7 +157,7 @@ JNIEXPORT jint JNICALL Java_at_spindi_WinPing_native_1WinPing_1Shutdown(JNIEnv *
 	DWORD rc = 0;
 
 	if (!SetEvent(gWinPing->shutdownEvent)) {
-		rc = GetLastError();
+		rc = logLastWin32Error(L"Shutdown", L"SetEvent", L"shutdownEvent");
 	}
 
 	IcmpCloseHandle(gWinPing->hIcmpFile);
